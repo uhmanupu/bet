@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>PindoramaBank — Seu Banco Digital</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 fill=%22%23000%22/><circle cx=%2250%22 cy=%2250%22 r=%2230%22 fill=%22%23FFD700%22/></svg>">
+  <link rel="icon" href="image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 fill=%22%23000%22/><circle cx=%2250%22 cy=%2250%22 r=%2230%22 fill=%22%23FFD700%22/></svg>">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     :root {
@@ -86,8 +86,11 @@
       background: var(--primary-dark);
       transform: translateY(-2px);
     }
-    .btn:active {
-      transform: translateY(0);
+    .btn:active { transform: translateY(0); }
+    .btn:disabled {
+      background: #555 !important;
+      cursor: not-allowed;
+      transform: none !important;
     }
 
     /* App */
@@ -234,20 +237,22 @@
       justify-content: space-between;
       align-items: flex-start;
     }
-    .transaction:last-child {
-      border: none;
-    }
-    .transaction-desc {
-      font-size: 0.95rem;
-      max-width: 70%;
-    }
-    .transaction-amount {
-      font-weight: 800;
-      white-space: nowrap;
-      text-align: right;
-    }
+    .transaction:last-child { border: none; }
+    .transaction-desc { font-size: 0.95rem; max-width: 70%; }
+    .transaction-amount { font-weight: 800; white-space: nowrap; text-align: right; }
     .credit { color: #4caf50; }
     .debit { color: var(--danger); }
+    .category { 
+      display: inline-block;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: #333;
+      text-align: center;
+      line-height: 24px;
+      font-size: 0.8rem;
+      margin-right: 8px;
+    }
 
     .notification {
       position: fixed;
@@ -263,9 +268,7 @@
       transform: translateX(200%);
       transition: transform 0.3s ease-out;
     }
-    .notification.show {
-      transform: translateX(0);
-    }
+    .notification.show { transform: translateX(0); }
 
     .logout {
       background: #252525 !important;
@@ -275,6 +278,34 @@
     .logout:hover {
       background: #333 !important;
       transform: translateY(-2px) !important;
+    }
+
+    /* Loading */
+    .loading {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255,255,255,0.3);
+      border-radius: 50%;
+      border-top-color: var(--primary);
+      animation: spin 1s ease-in-out infinite;
+      margin-right: 8px;
+      vertical-align: middle;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Session timeout */
+    #session-warning {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,0.8);
+      color: var(--primary);
+      padding: 12px 24px;
+      border-radius: 30px;
+      z-index: 2000;
+      display: none;
     }
   </style>
 </head>
@@ -291,10 +322,8 @@
         <label for="password">Senha</label>
         <input type="password" id="password" placeholder="••••••••" autocomplete="off" />
       </div>
-      <button class="btn" onclick="login()">Acessar Conta</button>
-      <p style="text-align:center; margin-top:18px; font-size:0.88rem; color:var(--text-secondary);">
-        Ambiente seguro • Dados simulados
-      </p>
+      <button class="btn" onclick="login()" id="login-btn">Acessar Conta</button>
+      <p style="text-align:center; margin-top:18px; font-size:0.88rem; color:var(--text-secondary);">Ambiente seguro • Dados simulados</p>
     </div>
 
     <!-- App -->
@@ -304,14 +333,12 @@
         <p style="color:var(--text-secondary); margin-top:8px;">Sua conta digital completa</p>
       </header>
 
-      <!-- Saldo -->
       <div class="card balance-card">
         <div class="balance-label">Saldo Disponível</div>
         <div class="balance" id="balance">R$ 0,00</div>
         <div class="account-info">Ag: 0001 • Cc: 123456-7 • Poupança Automática</div>
       </div>
 
-      <!-- Informações rápidas -->
       <div class="card">
         <div class="info-grid">
           <div class="info-item">
@@ -319,13 +346,12 @@
             <div class="info-value" id="credit-limit">R$ 2.500</div>
           </div>
           <div class="info-item">
-            <div style="color:var(--text-secondary);">Rendimento</div>
-            <div class="info-value" id="yield">0,50% a.m.</div>
+            <div style="color:var(--text-secondary);">Poupança</div>
+            <div class="info-value" id="savings">R$ 0,00</div>
           </div>
         </div>
       </div>
 
-      <!-- Ações -->
       <div class="card">
         <div class="action-grid">
           <div class="action-btn" onclick="showTransfer()">
@@ -353,12 +379,9 @@
             <div>Extrato</div>
           </div>
         </div>
-
-        <!-- Formulários dinâmicos -->
         <div id="dynamic-form" style="display:none; margin-top:20px;"></div>
       </div>
 
-      <!-- Histórico -->
       <div class="card">
         <h3 style="margin-bottom:16px; color:var(--primary); font-weight:800;">Últimas Movimentações</h3>
         <div class="transaction-list" id="transactions">
@@ -370,91 +393,158 @@
     </div>
   </div>
 
-  <!-- Notificação -->
   <div class="notification" id="notification"></div>
+  <div id="session-warning">Sessão expirará em 30 segundos</div>
 
   <script>
-    // Estado
+    // === LÓGICA REALISTA ===
     let currentUser = null;
-    const initialBalance = 1850.90;
-    const creditLimit = 2500.00;
-    const cardData = {
-      number: "5555 6666 7777 8888",
-      cvv: "123",
-      expiry: "12/28"
-    };
+    let sessionTimeout = null;
+    const SESSION_DURATION = 5 * 60 * 1000; // 5 minutos
+    const DAILY_YIELD = 0.000164; // ~0,5% ao mês
 
-    // Inicializar
+    // Inicializar ao carregar
     document.addEventListener('DOMContentLoaded', () => {
       const saved = localStorage.getItem('pindorama_user');
-      if (saved) {
-        currentUser = JSON.parse(saved);
-        showApp();
-        loadTransactions();
+      const lastActive = localStorage.getItem('pindorama_last_active');
+      
+      if (saved && lastActive) {
+        const inactive = Date.now() - parseInt(lastActive);
+        if (inactive < SESSION_DURATION) {
+          currentUser = JSON.parse(saved);
+          showApp();
+          loadTransactions();
+          resetSessionTimer();
+        } else {
+          localStorage.removeItem('pindorama_user');
+          notify('Sessão expirada. Faça login novamente.');
+        }
       }
     });
 
-    // Notificação
-    function notify(message, type = 'info') {
+    // Gerenciar sessão
+    function resetSessionTimer() {
+      if (sessionTimeout) clearTimeout(sessionTimeout);
+      sessionTimeout = setTimeout(() => {
+        document.getElementById('session-warning').style.display = 'block';
+        setTimeout(() => {
+          logout();
+          notify('Sessão encerrada por inatividade.');
+        }, 30000);
+      }, SESSION_DURATION - 30000);
+    }
+
+    function notify(message) {
       const notif = document.getElementById('notification');
       notif.textContent = message;
       notif.className = 'notification show';
       setTimeout(() => notif.classList.remove('show'), 3000);
+      resetSessionTimer();
     }
 
-    // Login
+    // Login realista
     function login() {
-      const cpf = document.getElementById('cpf').value.replace(/\D/g, '');
-      const password = document.getElementById('password').value;
-      if (cpf.length !== 11 || password.length < 4) {
-        notify('CPF ou senha inválidos.');
-        return;
-      }
-      currentUser = { 
-        cpf, 
-        balance: initialBalance,
-        savings: 0,
-        loan: 0
-      };
-      localStorage.setItem('pindorama_user', JSON.stringify(currentUser));
-      showApp();
-      loadTransactions();
-      notify('Bem-vindo ao PindoramaBank!');
+      const btn = document.getElementById('login-btn');
+      btn.disabled = true;
+      btn.innerHTML = '<span class="loading"></span> Entrando...';
+
+      setTimeout(() => {
+        const cpf = document.getElementById('cpf').value.replace(/\D/g, '');
+        const password = document.getElementById('password').value;
+        
+        if (cpf.length !== 11 || password.length < 4) {
+          notify('CPF ou senha inválidos.');
+          btn.disabled = false;
+          btn.textContent = 'Acessar Conta';
+          return;
+        }
+
+        // Criar conta realista
+        currentUser = {
+          cpf,
+          balance: 1850.90,
+          savings: 200.00,
+          loan: 0,
+          loanDebt: 0,
+          cardLimit: 2500.00,
+          lastYield: Date.now()
+        };
+        saveUser();
+        showApp();
+        loadTransactions();
+        notify('Bem-vindo ao PindoramaBank!');
+        resetSessionTimer();
+        
+        // Simular rendimento diário ao abrir o app
+        applyDailyYield();
+      }, 800);
     }
 
     function showApp() {
       document.getElementById('login-screen').style.display = 'none';
       document.getElementById('app').style.display = 'block';
-      document.getElementById('balance').textContent = `R$ ${currentUser.balance.toFixed(2).replace('.', ',')}`;
+      updateUI();
     }
 
     function logout() {
       currentUser = null;
       localStorage.removeItem('pindorama_user');
       localStorage.removeItem('pindorama_transactions');
+      localStorage.removeItem('pindorama_last_active');
+      if (sessionTimeout) clearTimeout(sessionTimeout);
       document.getElementById('app').style.display = 'none';
       document.getElementById('login-screen').style.display = 'block';
       document.getElementById('cpf').value = '';
       document.getElementById('password').value = '';
+      document.getElementById('session-warning').style.display = 'none';
     }
 
-    // Formatar CPF
-    function formatCPF(cpf) {
-      return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+    function saveUser() {
+      localStorage.setItem('pindorama_user', JSON.stringify(currentUser));
+      localStorage.setItem('pindorama_last_active', Date.now().toString());
+      updateUI();
     }
 
-    // Mostrar formulários
+    function updateUI() {
+      if (!currentUser) return;
+      document.getElementById('balance').textContent = `R$ ${currentUser.balance.toFixed(2).replace('.', ',')}`;
+      document.getElementById('savings').textContent = `R$ ${currentUser.savings.toFixed(2).replace('.', ',')}`;
+    }
+
+    // === RENDIMENTO DIÁRIO REALISTA ===
+    function applyDailyYield() {
+      if (!currentUser) return;
+      const now = Date.now();
+      const days = Math.floor((now - currentUser.lastYield) / (24 * 60 * 60 * 1000));
+      if (days >= 1 && currentUser.savings > 0) {
+        const yieldAmount = currentUser.savings * DAILY_YIELD * days;
+        currentUser.savings += yieldAmount;
+        currentUser.lastYield = now;
+        saveUser();
+        if (days > 0) {
+          addTransaction(yieldAmount, 'Rendimento Poupança', 'savings');
+        }
+      }
+    }
+
+    // === FORMULÁRIOS ===
     function showTransfer() {
       document.getElementById('dynamic-form').innerHTML = `
         <div class="form-group">
-          <input type="text" id="dest-cpf" placeholder="CPF do destinatário" maxlength="11" />
+          <input type="text" id="dest-cpf" placeholder="CPF do destinatário" maxlength="11" oninput="maskCPF(this)" />
         </div>
         <div class="form-group">
           <input type="number" id="amount" placeholder="Valor (R$)" min="1" step="0.01" />
         </div>
-        <button class="btn" onclick="doTransfer()">Confirmar</button>
+        <button class="btn" onclick="doTransfer()">Confirmar Transferência</button>
         <button class="btn logout" style="margin-top:12px;" onclick="hideForm()">Cancelar</button>
       `;
+    }
+
+    function maskCPF(input) {
+      let value = input.value.replace(/\D/g, '');
+      if (value.length > 11) value = value.slice(0, 11);
+      input.value = value;
     }
 
     function showReceive() {
@@ -471,7 +561,7 @@
 
     function showInvest() {
       document.getElementById('dynamic-form').innerHTML = `
-        <p style="margin-bottom:15px; color:var(--text);">Rendimento: 0,50% ao mês</p>
+        <p style="margin-bottom:15px; color:var(--text);">Rendimento: 0,50% ao mês • Liquidez diária</p>
         <div class="form-group">
           <input type="number" id="invest-amount" placeholder="Valor a investir (R$)" min="10" step="0.01" />
         </div>
@@ -482,32 +572,42 @@
 
     function showLoan() {
       document.getElementById('dynamic-form').innerHTML = `
-        <p style="margin-bottom:15px; color:var(--text);">Até R$ 2.500 • 3,5% ao mês</p>
+        <p style="margin-bottom:15px; color:var(--text);">
+          Empréstimo Pessoal<br>
+          <small>Até R$ 2.500 • 3,5% ao mês • 6 parcelas</small>
+        </p>
         <div class="form-group">
-          <input type="number" id="loan-amount" placeholder="Valor do empréstimo (R$)" min="100" max="2500" step="0.01" />
+          <input type="number" id="loan-amount" placeholder="Valor (R$)" min="100" max="2500" step="0.01" />
         </div>
-        <button class="btn" onclick="doLoan()">Solicitar Empréstimo</button>
+        <button class="btn" onclick="doLoan()">Simular Parcelas</button>
         <button class="btn logout" style="margin-top:12px;" onclick="hideForm()">Cancelar</button>
       `;
     }
 
     function showCard() {
+      const available = currentUser.balance + (currentUser.cardLimit - (currentUser.loanDebt || 0));
       document.getElementById('dynamic-form').innerHTML = `
         <div class="card-virtual">
-          <div style="font-size:0.9rem; color:var(--text-secondary);">Cartão de Débito Virtual</div>
-          <div class="card-number">${cardData.number}</div>
+          <div style="font-size:0.9rem; color:var(--text-secondary);">Cartão de Débito/Crédito</div>
+          <div class="card-number">5555 6666 7777 8888</div>
           <div class="card-footer">
-            <span>CVV: ${cardData.cvv}</span>
-            <span>Venc: ${cardData.expiry}</span>
+            <span>CVV: 123</span>
+            <span>Venc: 12/28</span>
           </div>
         </div>
+        <p style="margin-top:15px; text-align:center;">
+          Limite disponível: <strong>R$ ${available.toFixed(2).replace('.', ',')}</strong>
+        </p>
         <button class="btn logout" style="margin-top:20px;" onclick="hideForm()">Fechar</button>
       `;
     }
 
     function showStatement() {
       document.getElementById('dynamic-form').innerHTML = `
-        <p style="text-align:center; color:var(--text);">Extrato completo disponível no app mobile.</p>
+        <p style="text-align:center; color:var(--text);">
+          Extrato completo com categorias e filtros<br>
+          <small>Disponível no app mobile PindoramaBank</small>
+        </p>
         <button class="btn logout" style="margin-top:20px;" onclick="hideForm()">Fechar</button>
       `;
     }
@@ -516,12 +616,29 @@
       document.getElementById('dynamic-form').innerHTML = '';
     }
 
-    // Ações
+    // === AÇÕES COM LÓGICA REALISTA ===
     function doTransfer() {
       const dest = document.getElementById('dest-cpf').value.replace(/\D/g, '');
       const amount = parseFloat(document.getElementById('amount').value);
-      if (dest.length !== 11 || isNaN(amount) || amount <= 0) {
+      if (dest.length !== 11 || isNaN(amount) || amount < 1) {
         notify('Dados inválidos.');
+        return;
+      }
+      if (amount > currentUser.balance) {
+        notify('Saldo insuficiente para transferência.');
+        return;
+      }
+      currentUser.balance -= amount;
+      saveUser();
+      addTransaction(-amount, `Transferência para ${formatCPF(dest)}`, 'transfer');
+      notify('Transferência realizada com sucesso!');
+      hideForm();
+    }
+
+    function doInvest() {
+      const amount = parseFloat(document.getElementById('invest-amount').value);
+      if (isNaN(amount) || amount < 10) {
+        notify('Mínimo de R$ 10 para investir.');
         return;
       }
       if (amount > currentUser.balance) {
@@ -529,54 +646,71 @@
         return;
       }
       currentUser.balance -= amount;
+      currentUser.savings += amount;
       saveUser();
-      addTransaction(-amount, `Transferência para ${formatCPF(dest)}`);
-      notify('Transferência realizada com sucesso!');
-      hideForm();
-    }
-
-    function doInvest() {
-      const amount = parseFloat(document.getElementById('invest-amount').value);
-      if (isNaN(amount) || amount < 10 || amount > currentUser.balance) {
-        notify('Valor inválido ou saldo insuficiente.');
-        return;
-      }
-      currentUser.balance -= amount;
-      currentUser.savings = (currentUser.savings || 0) + amount;
-      saveUser();
-      addTransaction(-amount, 'Aplicação na Poupança');
-      notify('Investimento realizado!');
+      addTransaction(-amount, 'Aplicação na Poupança', 'investment');
+      notify('Investimento realizado com sucesso!');
       hideForm();
     }
 
     function doLoan() {
       const amount = parseFloat(document.getElementById('loan-amount').value);
-      if (isNaN(amount) || amount < 100 || amount > creditLimit) {
-        notify('Valor fora do limite permitido.');
+      if (isNaN(amount) || amount < 100 || amount > 2500) {
+        notify('Valor deve estar entre R$ 100 e R$ 2.500.');
         return;
       }
+      const monthlyInterest = 0.035;
+      const months = 6;
+      const total = amount * Math.pow(1 + monthlyInterest, months);
+      const installment = total / months;
+
+      document.getElementById('dynamic-form').innerHTML = `
+        <h4 style="text-align:center; margin-bottom:15px;">Simulação de Empréstimo</h4>
+        <p><strong>Valor solicitado:</strong> R$ ${amount.toFixed(2).replace('.', ',')}</p>
+        <p><strong>Parcelas:</strong> 6x de R$ ${installment.toFixed(2).replace('.', ',')}</p>
+        <p><strong>Total a pagar:</strong> R$ ${total.toFixed(2).replace('.', ',')}</p>
+        <button class="btn" onclick="confirmLoan(${amount})" style="margin-top:15px;">Confirmar Empréstimo</button>
+        <button class="btn logout" style="margin-top:12px;" onclick="showLoan()">Voltar</button>
+      `;
+    }
+
+    function confirmLoan(amount) {
       currentUser.balance += amount;
+      currentUser.loanDebt = (currentUser.loanDebt || 0) + amount * Math.pow(1.035, 6);
       currentUser.loan = (currentUser.loan || 0) + amount;
       saveUser();
-      addTransaction(amount, 'Empréstimo Pessoal');
-      notify('Empréstimo creditado na conta!');
+      addTransaction(amount, 'Empréstimo Pessoal', 'loan');
+      notify('Empréstimo aprovado! Valor creditado.');
       hideForm();
     }
 
-    // Utilitários
-    function saveUser() {
-      localStorage.setItem('pindorama_user', JSON.stringify(currentUser));
-      document.getElementById('balance').textContent = `R$ ${currentUser.balance.toFixed(2).replace('.', ',')}`;
+    // === UTILITÁRIOS ===
+    function formatCPF(cpf) {
+      return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
     }
 
-    function addTransaction(amount, desc) {
+    function addTransaction(amount, desc, category = 'other') {
       const key = 'pindorama_transactions';
       const list = JSON.parse(localStorage.getItem(key) || '[]');
+      const icons = {
+        transfer: '📤',
+        investment: '📈',
+        loan: '💰',
+        savings: '🌱',
+        other: '•'
+      };
       list.unshift({
         id: Date.now(),
         amount,
         desc,
-        date: new Date().toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })
+        category,
+        icon: icons[category] || '•',
+        date: new Date().toLocaleString('pt-BR', { 
+          day: '2-digit', 
+          month: '2-digit', 
+          hour: '2-digit', 
+          minute: '2-digit' 
+        })
       });
       localStorage.setItem(key, JSON.stringify(list));
       loadTransactions();
@@ -591,13 +725,20 @@
       }
       container.innerHTML = list.slice(0, 8).map(t => `
         <div class="transaction">
-          <div class="transaction-desc">${t.desc}<br><small>${t.date}</small></div>
+          <div class="transaction-desc">
+            <span class="category">${t.icon}</span>${t.desc}
+            <br><small>${t.date}</small>
+          </div>
           <div class="transaction-amount ${t.amount >= 0 ? 'credit' : 'debit'}">
             ${t.amount >= 0 ? '+' : ''} R$ ${Math.abs(t.amount).toFixed(2).replace('.', ',')}
           </div>
         </div>
       `).join('');
     }
+
+    // Atualizar rendimento ao interagir
+    document.addEventListener('click', resetSessionTimer);
+    document.addEventListener('keypress', resetSessionTimer);
   </script>
 </body>
 </html>
