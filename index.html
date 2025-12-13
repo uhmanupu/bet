@@ -3,43 +3,119 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>BetDemo - Apostas Esportivas (Fictício)</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta name="description" content="Plataforma fictícia de simulação de apostas esportivas para fins educacionais." />
+  <title>BetSim | Simulador Esportivo (Fictício)</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-  <header>
-    <h1>⚽ BetDemo</h1>
-    <p>Site para fins educacionais – <strong>nenhuma aposta real</strong></p>
+  <!-- Header -->
+  <header class="header">
+    <div class="container">
+      <div class="logo">
+        <h1>Bet<span>Sim</span></h1>
+      </div>
+      <nav class="nav">
+        <ul>
+          <li><a href="#">Jogos</a></li>
+          <li><a href="#">Resultados</a></li>
+          <li><a href="#">Estatísticas</a></li>
+          <li><a href="#" class="btn-login">Login</a></li>
+        </ul>
+      </nav>
+    </div>
   </header>
 
-  <main>
-    <section class="eventos">
-      <h2>Próximos Jogos</h2>
-      <div class="jogo">
-        <p>Brasil vs Argentina</p>
-        <div class="odds">
-          <button onclick="simularAposta('Brasil vence')">Brasil (1.80)</button>
-          <button onclick="simularAposta('Empate')">Empate (3.20)</button>
-          <button onclick="simularAposta('Argentina vence')">Argentina (4.00)</button>
-        </div>
+  <!-- Hero -->
+  <section class="hero">
+    <div class="container">
+      <h2>Apostas Esportivas Simuladas</h2>
+      <p class="tagline">Explore um ambiente seguro e educativo para entender como funcionam as apostas esportivas — sem riscos reais.</p>
+      <div class="disclaimer">
+        ⚠️ Este é um <strong>simulador fictício</strong>. Nenhuma aposta envolve dinheiro real.
       </div>
-      <div class="jogo">
-        <p>Inglaterra vs Alemanha</p>
-        <div class="odds">
-          <button onclick="simularAposta('Inglaterra vence')">Inglaterra (2.10)</button>
-          <button onclick="simularAposta('Empate')">Empate (3.40)</button>
-          <button onclick="simularAposta('Alemanha vence')">Alemanha (3.00)</button>
-        </div>
-      </div>
-    </section>
+    </div>
+  </section>
 
-    <div id="resultado"></div>
+  <!-- Upcoming Matches -->
+  <main class="main">
+    <div class="container">
+      <h2>Próximos Jogos</h2>
+      <div class="matches-grid">
+        <!-- Match 1 -->
+        <div class="match-card">
+          <div class="match-teams">
+            <div class="team">
+              <span class="team-name">Brasil</span>
+              <span class="odds">1.85</span>
+            </div>
+            <div class="vs">VS</div>
+            <div class="team">
+              <span class="team-name">Argentina</span>
+              <span class="odds">4.20</span>
+            </div>
+          </div>
+          <div class="match-actions">
+            <button class="btn bet" data-team="Brasil">Apostar</button>
+            <button class="btn bet" data-team="Empate">Empate (3.40)</button>
+            <button class="btn bet" data-team="Argentina">Apostar</button>
+          </div>
+        </div>
+
+        <!-- Match 2 -->
+        <div class="match-card">
+          <div class="match-teams">
+            <div class="team">
+              <span class="team-name">Manchester City</span>
+              <span class="odds">1.60</span>
+            </div>
+            <div class="vs">VS</div>
+            <div class="team">
+              <span class="team-name">Liverpool</span>
+              <span class="odds">5.00</span>
+            </div>
+          </div>
+          <div class="match-actions">
+            <button class="btn bet" data-team="Manchester City">Apostar</button>
+            <button class="btn bet" data-team="Empate">Empate (3.80)</button>
+            <button class="btn bet" data-team="Liverpool">Apostar</button>
+          </div>
+        </div>
+
+        <!-- Match 3 -->
+        <div class="match-card">
+          <div class="match-teams">
+            <div class="team">
+              <span class="team-name">Lakers</span>
+              <span class="odds">1.90</span>
+            </div>
+            <div class="vs">VS</div>
+            <div class="team">
+              <span class="team-name">Warriors</span>
+              <span class="odds">1.90</span>
+            </div>
+          </div>
+          <div class="match-actions">
+            <button class="btn bet" data-team="Lakers">Apostar</button>
+            <button class="btn bet" data-team="Warriors">Apostar</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="simulation-result" class="simulation-result"></div>
+    </div>
   </main>
 
-  <footer>
-    <p>⚠️ Este site é fictício. Não aceita dinheiro real. Apenas para estudo.</p>
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <p>© 2025 BetSim — Simulador Educacional de Apostas Esportivas</p>
+      <p>Este site não oferece apostas reais. Não é um serviço regulamentado. Apenas para fins de demonstração e aprendizado.</p>
+    </div>
   </footer>
 
-  <script src="script.js"></script>
+  <script src="js/main.js"></script>
 </body>
 </html>
