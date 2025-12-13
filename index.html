@@ -3,91 +3,197 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <meta name="description" content="BetSim — Simulador educacional de apostas esportivas (fictício). Nenhuma aposta real." />
-  <title>BetSim | Simulador Esportivo (Fictício)</title>
-  <link rel="stylesheet" href="style.css" />
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <!-- Favicon simples -->
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚽</text></svg>">
+  <title>BetSim — Simulador Fictício</title>
+  <meta name="description" content="Simulador educacional de apostas esportivas. Nenhuma aposta real." />
+  <style>
+    /* --- Reset e Variáveis --- */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #f8f9fa;
+      --text: #212529;
+      --primary: #0d6efd;
+      --dark: #212529;
+      --light: #ffffff;
+      --success: #d4edda;
+      --danger: #f8d7da;
+      --border: #dee2e6;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding-bottom: 2rem;
+    }
+    .container {
+      width: 95%;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 0 15px;
+    }
+    header {
+      background: var(--dark);
+      color: var(--light);
+      padding: 1.2rem 0;
+      text-align: center;
+    }
+    header h1 {
+      font-size: 1.8rem;
+      font-weight: 700;
+    }
+    header small {
+      display: block;
+      margin-top: 0.4rem;
+      opacity: 0.8;
+      font-size: 0.9rem;
+    }
+    .hero {
+      text-align: center;
+      padding: 2rem 0;
+    }
+    .hero h2 {
+      font-size: 1.6rem;
+      margin-bottom: 1rem;
+    }
+    .disclaimer {
+      background: #fff3cd;
+      color: #856404;
+      padding: 0.8rem;
+      border-radius: 8px;
+      font-weight: 500;
+      margin: 1.2rem 0;
+      font-size: 0.95rem;
+    }
+    .match {
+      background: var(--light);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.2rem;
+      margin: 1.2rem 0;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
+    .teams {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+      font-weight: 600;
+    }
+    .odds {
+      display: flex;
+      justify-content: center;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+    }
+    .btn {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: background 0.2s;
+    }
+    .btn:hover {
+      background: #0b5ed7;
+    }
+    #result {
+      margin-top: 1.5rem;
+      padding: 1rem;
+      border-radius: 8px;
+      text-align: center;
+      font-weight: 600;
+      display: none;
+    }
+    .success {
+      background: var(--success);
+      color: #155724;
+      display: block !important;
+    }
+    .fail {
+      background: var(--danger);
+      color: #721c24;
+      display: block !important;
+    }
+    footer {
+      text-align: center;
+      margin-top: 2rem;
+      color: #6c757d;
+      font-size: 0.9rem;
+    }
+    @media (max-width: 600px) {
+      .teams {
+        flex-direction: column;
+        gap: 0.5rem;
+        align-items: center;
+      }
+    }
+  </style>
 </head>
 <body>
-  <!-- Header -->
-  <header class="header">
+  <header>
     <div class="container">
-      <div class="logo">
-        <h1>Bet<span>Sim</span></h1>
-      </div>
-      <nav class="nav">
-        <ul>
-          <li><a href="#jogos">Jogos</a></li>
-          <li><a href="#como-funciona">Como Funciona</a></li>
-          <li><a href="#sobre">Sobre</a></li>
-        </ul>
-      </nav>
+      <h1>Bet<span style="color:#6c757d">Sim</span></h1>
+      <small>Simulador Educacional — Nenhuma aposta real</small>
     </div>
   </header>
 
-  <!-- Hero -->
-  <section class="hero">
-    <div class="container">
-      <h1>Simule Apostas Esportivas com Segurança</h1>
-      <p class="tagline">Explore um ambiente educacional para entender odds, mercados e estratégias — sem riscos financeiros.</p>
+  <main class="container">
+    <div class="hero">
+      <h2>Simule Apostas Esportivas</h2>
       <div class="disclaimer">
-        ⚠️ <strong>Este é um simulador fictício.</strong> Nenhuma aposta envolve dinheiro real ou dados pessoais.
+        ⚠️ Este é um ambiente <strong>fictício</strong>. Nenhum dado é coletado e nenhuma aposta usa dinheiro real.
       </div>
     </div>
-  </section>
 
-  <!-- Sobre -->
-  <section id="sobre" class="section">
-    <div class="container">
-      <h2>Sobre o BetSim</h2>
-      <p>
-        O BetSim é um projeto educacional desenvolvido para fins de demonstração de interface e lógica de simulação.
-        Não é uma casa de apostas, nem está associado a nenhuma operadora real. O objetivo é ensinar conceitos básicos
-        de apostas esportivas de forma segura e ética.
-      </p>
-    </div>
-  </section>
-
-  <!-- Como Funciona -->
-  <section id="como-funciona" class="section bg-light">
-    <div class="container">
-      <h2>Como Funciona?</h2>
-      <ul class="steps">
-        <li>Escolha um jogo e uma opção de aposta (ex: vitória, empate).</li>
-        <li>Clique em "Apostar" para simular sua escolha.</li>
-        <li>O sistema gera um resultado aleatório (35% de chance de "acerto").</li>
-        <li>Tudo é fictício — sem cadastro, sem pagamento, sem risco.</li>
-      </ul>
-    </div>
-  </section>
-
-  <!-- Jogos -->
-  <section id="jogos" class="section">
-    <div class="container">
-      <h2>Próximos Jogos</h2>
-      <div class="matches-grid" id="matches-container">
-        <!-- Jogos carregados via JS -->
+    <!-- Jogos -->
+    <div class="match">
+      <div class="teams">
+        <div>Brasil <small>(1.85)</small></div>
+        <div>VS</div>
+        <div>Argentina <small>(4.20)</small></div>
       </div>
-      <div id="simulation-result" class="simulation-result"></div>
+      <div class="odds">
+        <button class="btn" onclick="simulate('Brasil')">Apostar Brasil</button>
+        <button class="btn" onclick="simulate('Empate')">Empate (3.40)</button>
+        <button class="btn" onclick="simulate('Argentina')">Apostar Argentina</button>
+      </div>
     </div>
-  </section>
 
-  <!-- Footer -->
-  <footer class="footer">
-    <div class="container">
-      <p>© 2025 BetSim — Projeto Educacional</p>
-      <p>Este site é <strong>fictício</strong> e não oferece apostas reais. Não é regulamentado por autoridade alguma.</p>
-      <p>
-        Código-fonte disponível no 
-        <a href="https://github.com/seu-usuario/seu-repositorio" target="_blank" rel="noopener">GitHub</a>.
-      </p>
+    <div class="match">
+      <div class="teams">
+        <div>Lakers <small>(1.90)</small></div>
+        <div>VS</div>
+        <div>Warriors <small>(1.90)</small></div>
+      </div>
+      <div class="odds">
+        <button class="btn" onclick="simulate('Lakers')">Apostar Lakers</button>
+        <button class="btn" onclick="simulate('Warriors')">Apostar Warriors</button>
+      </div>
     </div>
+
+    <div id="result"></div>
+  </main>
+
+  <footer class="container">
+    <p>© 2025 BetSim — Projeto Fictício para Fins Educacionais</p>
+    <p>Não é uma casa de apostas. Não aceita pagamentos. Apenas simulação.</p>
   </footer>
 
-  <script src="script.js"></script>
+  <script>
+    function simulate(team) {
+      const success = Math.random() < 0.35; // 35% de chance
+      const resultDiv = document.getElementById('result');
+      if (success) {
+        resultDiv.innerHTML = `✅ Sua aposta em <strong>${team}</strong> foi bem-sucedida! (Resultado simulado)`;
+        resultDiv.className = 'success';
+      } else {
+        resultDiv.innerHTML = `❌ Sua aposta em <strong>${team}</strong> não venceu. Tente novamente!`;
+        resultDiv.className = 'fail';
+      }
+      resultDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+  </script>
 </body>
 </html>
