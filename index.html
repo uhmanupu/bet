@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>BetSim Pro — Todos os Jogos</title>
-  <link rel="icon" href="image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎲</text></svg>">
+  <title>BetSim Pro — Jogos com Efeitos Visuais</title>
+  <link rel="icon" href="image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎮</text></svg>">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     :root {
-      --bg: #f9f9f9;
+      --bg: #f8f9fa;
       --surface: #ffffff;
       --text: #1e1e1e;
       --text-secondary: #666;
@@ -41,7 +41,6 @@
       padding: 0 15px;
     }
 
-    /* Header */
     header {
       background: linear-gradient(135deg, #1a252f, #0d1b2a);
       color: white;
@@ -55,7 +54,6 @@
     header h1 { font-size: 2.1rem; font-weight: 800; letter-spacing: -0.5px; }
     header h1 span { color: #4cc9f0; }
 
-    /* Saldo */
     .balance-bar {
       background: white;
       padding: 1.1rem;
@@ -70,10 +68,8 @@
       font-size: 1.55rem;
       font-weight: 800;
       color: var(--primary);
-      letter-spacing: -0.5px;
     }
 
-    /* Tabs */
     .tabs {
       display: flex;
       gap: 0.9rem;
@@ -100,7 +96,6 @@
     .tab-content { display: none; }
     .tab-content.active { display: block; }
 
-    /* Cards */
     .card {
       background: var(--surface);
       border-radius: var(--radius);
@@ -119,17 +114,230 @@
       margin-bottom: 1.4rem;
       font-size: 1.35rem;
       font-weight: 700;
-      color: var(--text);
     }
 
-    /* Esportes */
+    /* Caça-Níqueis com animação */
+    .slot-machine {
+      display: flex;
+      justify-content: center;
+      gap: 0.7rem;
+      margin: 1.6rem 0;
+      perspective: 600px;
+    }
+    .slot-reel {
+      width: 85px;
+      height: 85px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: white;
+      border: 3px solid #f0f0f0;
+      border-radius: 14px;
+      font-size: 2.2rem;
+      font-weight: bold;
+      box-shadow: inset 0 4px 12px rgba(0,0,0,0.08);
+      transition: transform 0.4s ease-out, background 0.3s;
+    }
+    .slot-reel.spinning {
+      animation: spin 0.8s cubic-bezier(0.68, -0.55, 0.27, 1.55) infinite;
+    }
+    @keyframes spin {
+      0% { transform: translateY(0); }
+      50% { transform: translateY(-120%); }
+      100% { transform: translateY(0); }
+    }
+    .slot-reel.result {
+      animation: bounce 0.6s;
+    }
+    @keyframes bounce {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.15); }
+    }
+
+    /* Roleta */
+    .roulette-container {
+      position: relative;
+      width: 220px;
+      height: 220px;
+      margin: 1.6rem auto;
+      display: none;
+    }
+    .roulette-wheel {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: conic-gradient(
+        #006a4e 0deg, #c00 10.5deg, #006a4e 21deg, #c00 31.5deg,
+        #006a4e 42deg, #c00 52.5deg, #006a4e 63deg, #c00 73.5deg,
+        #006a4e 84deg, #c00 94.5deg, #006a4e 105deg, #c00 115.5deg,
+        #006a4e 126deg, #c00 136.5deg, #006a4e 147deg, #c00 157.5deg,
+        #006a4e 168deg, #c00 178.5deg, #006a4e 189deg, #c00 199.5deg,
+        #006a4e 210deg, #c00 220.5deg, #006a4e 231deg, #c00 241.5deg,
+        #006a4e 252deg, #c00 262.5deg, #006a4e 273deg, #c00 283.5deg,
+        #006a4e 294deg, #c00 304.5deg, #006a4e 315deg, #c00 325.5deg,
+        #006a4e 336deg, #c00 346.5deg, #006a4e 357deg, #006a4e 360deg
+      );
+      border: 8px solid #333;
+      position: relative;
+      transition: transform 4s cubic-bezier(0.2, 0.8, 0.4, 1);
+    }
+    .roulette-center {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 40px;
+      height: 40px;
+      background: white;
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      color: #333;
+    }
+    .roulette-marker {
+      position: absolute;
+      top: -20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 0;
+      border-left: 12px solid transparent;
+      border-right: 12px solid transparent;
+      border-top: 20px solid red;
+      z-index: 10;
+    }
+
+    /* Dados */
+    .dice-container {
+      display: flex;
+      justify-content: center;
+      gap: 1.2rem;
+      margin: 1.6rem 0;
+      height: 80px;
+    }
+    .die {
+      width: 70px;
+      height: 70px;
+      background: white;
+      border: 2px solid #ddd;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      font-weight: bold;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .die.rolling {
+      animation: roll 0.8s ease-out;
+    }
+    @keyframes roll {
+      0% { transform: rotate(0deg) translateY(0); }
+      25% { transform: rotate(90deg) translateY(-20px); }
+      50% { transform: rotate(180deg) translateY(0); }
+      75% { transform: rotate(270deg) translateY(-10px); }
+      100% { transform: rotate(360deg) translateY(0); }
+    }
+
+    /* Blackjack */
+    .blackjack-cards {
+      display: flex;
+      justify-content: center;
+      gap: 1.2rem;
+      margin: 1.6rem 0;
+      perspective: 800px;
+    }
+    .card-flip {
+      width: 60px;
+      height: 90px;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.6s;
+    }
+    .card-front, .card-back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 1.2rem;
+    }
+    .card-back {
+      background: linear-gradient(135deg, #2c3e50, #1a1a2e);
+      color: white;
+    }
+    .card-front {
+      background: white;
+      color: #2c3e50;
+      border: 1px solid #ccc;
+      transform: rotateY(180deg);
+    }
+    .card-flip.flipped {
+      transform: rotateY(180deg);
+    }
+
+    /* Bingo */
+    .bingo-card {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+      max-width: 300px;
+      margin: 1.4rem auto;
+    }
+    .bingo-cell {
+      aspect-ratio: 1;
+      background: white;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 1.1rem;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+      transition: background 0.3s, transform 0.3s;
+    }
+    .bingo-called {
+      background: #e8f5e9;
+      color: var(--blackjack);
+      transform: scale(1.05);
+    }
+    .bingo-calling {
+      text-align: center;
+      font-size: 1.2rem;
+      margin: 1rem 0;
+      font-weight: 700;
+      color: var(--bingo);
+    }
+
+    /* Resultado Geral */
+    .result {
+      padding: 1.3rem;
+      border-radius: var(--radius);
+      margin: 1.6rem 0;
+      text-align: center;
+      font-weight: 700;
+      font-size: 1.1rem;
+      display: none;
+    }
+    .result.win { background: #e8f5e9; color: #2e7d32; display: block; }
+    .result.lose { background: #ffebee; color: #c62828; display: block; }
+    .result.neutral { background: #e3f2fd; color: #1565c0; display: block; }
+
+    /* Outros */
     .match-header {
       display: flex;
       justify-content: space-between;
       margin-bottom: 1.3rem;
       font-weight: 700;
       font-size: 1.15rem;
-      color: #2c3e50;
     }
     .odds-grid {
       display: flex;
@@ -155,14 +363,6 @@
       border-color: var(--primary);
     }
 
-    /* Botões de Jogo */
-    .game-section { margin-bottom: 1.5rem; }
-    .section-title {
-      font-size: 1.15rem;
-      margin-bottom: 1rem;
-      font-weight: 700;
-      color: var(--text);
-    }
     .game-btn {
       width: 100%;
       padding: 1.1rem;
@@ -173,107 +373,14 @@
       margin-bottom: 1.1rem;
       font-size: 1.1rem;
       transition: all 0.25s;
-      letter-spacing: -0.3px;
     }
-    .btn-slot { background: #fff8e1; color: var(--slot); border: 2px solid #ffecb3; }
-    .btn-roulette { background: #ffebee; color: var(--roulette); border: 2px solid #ffcdd2; }
-    .btn-blackjack { background: #e8f5e9; color: var(--blackjack); border: 2px solid #c8e6c9; }
-    .btn-dice { background: #fff3e0; color: var(--dice); border: 2px solid #ffccbc; }
-    .btn-bingo { background: #e3f2fd; color: var(--bingo); border: 2px solid #bbdefb; }
+    .btn-slot { background: #fff8e1; color: var(--slot); }
+    .btn-roulette { background: #ffebee; color: var(--roulette); }
+    .btn-blackjack { background: #e8f5e9; color: var(--blackjack); }
+    .btn-dice { background: #fff3e0; color: var(--dice); }
+    .btn-bingo { background: #e3f2fd; color: var(--bingo); }
     .game-btn:hover { transform: scale(1.015); opacity: 0.95; }
 
-    /* Caça-Níqueis */
-    .slot-machine {
-      display: flex;
-      justify-content: center;
-      gap: 0.7rem;
-      margin: 1.6rem 0;
-    }
-    .slot-reel {
-      width: 85px;
-      height: 85px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: white;
-      border: 3px solid #f0f0f0;
-      border-radius: 14px;
-      font-size: 2.2rem;
-      font-weight: bold;
-      box-shadow: inset 0 4px 12px rgba(0,0,0,0.08);
-      transition: transform 0.2s;
-    }
-
-    /* Roleta */
-    .roulette-result {
-      text-align: center;
-      font-size: 2.3rem;
-      font-weight: 800;
-      margin: 1.6rem 0;
-      padding: 1.2rem;
-      border-radius: var(--radius);
-      background: #fafafa;
-      border: 2px dashed #ddd;
-    }
-
-    /* Dados */
-    .dice-result {
-      display: flex;
-      justify-content: center;
-      gap: 1.2rem;
-      margin: 1.6rem 0;
-    }
-    .die {
-      width: 70px;
-      height: 70px;
-      background: white;
-      border: 2px solid #ddd;
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 2rem;
-      font-weight: bold;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    }
-
-    /* Bingo */
-    .bingo-card {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 8px;
-      max-width: 300px;
-      margin: 1.4rem auto;
-    }
-    .bingo-cell {
-      aspect-ratio: 1;
-      background: white;
-      border: 2px solid #ddd;
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 700;
-      font-size: 1.1rem;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.06);
-    }
-    .bingo-called { background: #e8f5e9; color: var(--blackjack); }
-
-    /* Resultado Geral */
-    .result {
-      padding: 1.3rem;
-      border-radius: var(--radius);
-      margin: 1.6rem 0;
-      text-align: center;
-      font-weight: 700;
-      font-size: 1.1rem;
-      display: none;
-    }
-    .result.win { background: #e8f5e9; color: #2e7d32; display: block; }
-    .result.lose { background: #ffebee; color: #c62828; display: block; }
-    .result.neutral { background: #e3f2fd; color: #1565c0; display: block; }
-
-    /* Carrinho e Histórico */
     .cart, .history {
       background: white;
       padding: 1.4rem;
@@ -287,12 +394,7 @@
       font-size: 1.3rem;
       font-weight: 700;
     }
-    .cart-items {
-      min-height: 28px;
-      margin-bottom: 1.2rem;
-      font-size: 0.98rem;
-      font-weight: 600;
-    }
+    .cart-items { min-height: 28px; margin-bottom: 1.2rem; font-size: 0.98rem; }
     .cart-empty { color: var(--text-secondary); font-style: italic; }
     .btn-action {
       background: var(--primary);
@@ -306,13 +408,9 @@
       font-size: 1.05rem;
       display: block;
       width: 100%;
-      letter-spacing: -0.3px;
     }
     .btn-action:hover { background: var(--primary-dark); }
-    .btn-action:disabled {
-      background: #b0bec5;
-      cursor: not-allowed;
-    }
+    .btn-action:disabled { background: #b0bec5; cursor: not-allowed; }
 
     .history-list { list-style: none; }
     .history-item {
@@ -331,14 +429,12 @@
       margin-top: 2.6rem;
       color: var(--text-secondary);
       font-size: 0.88rem;
-      line-height: 1.6;
     }
 
     @media (max-width: 600px) {
       .match-header { flex-direction: column; gap: 0.5rem; text-align: center; }
       .odd-btn { min-width: 80px; padding: 0.65rem 0.3rem; font-size: 0.88rem; }
-      .slot-reel { width: 65px; height: 65px; font-size: 1.8rem; }
-      .die { width: 55px; height: 55px; font-size: 1.6rem; }
+      .roulette-container { width: 180px; height: 180px; }
       header h1 { font-size: 1.75rem; }
     }
   </style>
@@ -357,7 +453,7 @@
 
     <div class="tabs">
       <button class="tab-btn active" data-tab="sports">⚽ Esportes</button>
-      <button class="tab-btn" data-tab="casino">🎰 Cassino</button>
+      <button class="tab-btn" data-tab="casino">🎮 Cassino</button>
     </div>
 
     <!-- Esportes -->
@@ -374,18 +470,6 @@
           <div class="odd-btn" data-type="sport" data-game="Futebol" data-team="Argentina" data-odds="4.20">Argentina<br><small>4.20</small></div>
         </div>
       </div>
-
-      <div class="card">
-        <div class="match-header">
-          <span>Lakers</span>
-          <span>VS</span>
-          <span>Warriors</span>
-        </div>
-        <div class="odds-grid">
-          <div class="odd-btn" data-type="sport" data-game="Basquete" data-team="Lakers" data-odds="1.90">Lakers<br><small>1.90</small></div>
-          <div class="odd-btn" data-type="sport" data-game="Basquete" data-team="Warriors" data-odds="1.90">Warriors<br><small>1.90</small></div>
-        </div>
-      </div>
     </div>
 
     <!-- Cassino -->
@@ -395,8 +479,7 @@
 
         <!-- Caça-Níqueis -->
         <div class="game-section">
-          <div class="section-title">🎰 Caça-Níqueis (R$10)</div>
-          <button class="game-btn btn-slot" onclick="playSlot()">Jogar Caça-Níqueis</button>
+          <button class="game-btn btn-slot" onclick="playSlot()">🎰 Caça-Níqueis (R$10)</button>
           <div id="slot-display" style="display:none;">
             <div class="slot-machine">
               <div class="slot-reel" id="reel1">🍒</div>
@@ -409,24 +492,36 @@
 
         <!-- Roleta -->
         <div class="game-section">
-          <div class="section-title">🎲 Roleta (R$10)</div>
-          <button class="game-btn btn-roulette" onclick="playRoulette()">Girar Roleta</button>
-          <div class="roulette-result" id="roulette-display" style="display:none;">0</div>
+          <button class="game-btn btn-roulette" onclick="playRoulette()">🎲 Roleta (R$10)</button>
+          <div class="roulette-container" id="roulette-container">
+            <div class="roulette-marker"></div>
+            <div class="roulette-wheel" id="roulette-wheel">
+              <div class="roulette-center" id="roulette-center">0</div>
+            </div>
+          </div>
           <div class="result" id="roulette-result" style="display:none;"></div>
         </div>
 
         <!-- Blackjack -->
         <div class="game-section">
-          <div class="section-title">♠️ Blackjack (R$10)</div>
-          <button class="game-btn btn-blackjack" onclick="playBlackjack()">Jogar Blackjack</button>
+          <button class="game-btn btn-blackjack" onclick="playBlackjack()">♠️ Blackjack (R$10)</button>
+          <div class="blackjack-cards" id="blackjack-cards" style="display:none;">
+            <div class="card-flip" id="player-card">
+              <div class="card-back"></div>
+              <div class="card-front" id="player-value">17</div>
+            </div>
+            <div class="card-flip" id="dealer-card">
+              <div class="card-back"></div>
+              <div class="card-front" id="dealer-value">20</div>
+            </div>
+          </div>
           <div class="result" id="blackjack-result" style="display:none;"></div>
         </div>
 
-        <!-- Dados (Craps) -->
+        <!-- Dados -->
         <div class="game-section">
-          <div class="section-title">🎲 Dados (R$10)</div>
-          <button class="game-btn btn-dice" onclick="playDice()">Lançar Dados</button>
-          <div class="dice-result" id="dice-display" style="display:none;">
+          <button class="game-btn btn-dice" onclick="playDice()">🎲 Dados (R$10)</button>
+          <div class="dice-container" id="dice-container" style="display:none;">
             <div class="die" id="die1">1</div>
             <div class="die" id="die2">1</div>
           </div>
@@ -435,8 +530,8 @@
 
         <!-- Bingo -->
         <div class="game-section">
-          <div class="section-title">🎯 Bingo (R$10)</div>
-          <button class="game-btn btn-bingo" onclick="playBingo()">Jogar Bingo</button>
+          <button class="game-btn btn-bingo" onclick="playBingo()">🎯 Bingo (R$10)</button>
+          <div class="bingo-calling" id="bingo-calling" style="display:none;"></div>
           <div class="bingo-card" id="bingo-card" style="display:none;"></div>
           <div class="result" id="bingo-result" style="display:none;"></div>
         </div>
@@ -447,45 +542,45 @@
     <div class="cart">
       <h3>Apostas Esportivas</h3>
       <div class="cart-items" id="cart-items">
-        <div class="cart-empty">Nenhuma aposta selecionada</div>
+        <div class="cart-empty">Nenhuma aposta</div>
       </div>
       <button class="btn-action" id="simulate-btn" disabled>Simular Rodada</button>
     </div>
 
     <!-- Histórico -->
     <div class="history">
-      <h3>Histórico de Atividades</h3>
+      <h3>Histórico</h3>
       <ul class="history-list" id="history-list">
-        <li class="history-item">
-          <span>Nenhuma atividade ainda</span>
-          <span></span>
-        </li>
+        <li class="history-item"><span>Nenhuma atividade</span><span></span></li>
       </ul>
     </div>
   </main>
 
   <footer class="container">
-    <p>© 2025 BetSim Pro — Plataforma de Simulação</p>
+    <p>© 2025 BetSim Pro</p>
   </footer>
 
   <script>
-    // Estado
     let balance = parseFloat(localStorage.getItem('betsim_balance')) || 100;
     let cart = JSON.parse(localStorage.getItem('betsim_cart')) || [];
     let history = JSON.parse(localStorage.getItem('betsim_history')) || [];
 
-    // Elementos
     const balanceEl = document.getElementById('balance');
     const cartItemsEl = document.getElementById('cart-items');
     const simulateBtn = document.getElementById('simulate-btn');
     const historyListEl = document.getElementById('history-list');
 
-    // Atualiza UI
     balanceEl.textContent = `R$ ${balance.toFixed(2)}`;
     renderCart();
     renderHistory();
 
-    // ABA
+    function saveState() {
+      localStorage.setItem('betsim_balance', balance.toString());
+      localStorage.setItem('betsim_cart', JSON.stringify(cart));
+      localStorage.setItem('betsim_history', JSON.stringify(history.slice(0, 20)));
+    }
+
+    // --- ABA ---
     document.querySelectorAll('.tab-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -495,7 +590,7 @@
       });
     });
 
-    // APOSTAS ESPORTIVAS
+    // --- APOSTAS ESPORTIVAS ---
     document.querySelectorAll('[data-type="sport"]').forEach(el => {
       el.addEventListener('click', () => {
         const game = el.dataset.game;
@@ -510,7 +605,7 @@
 
     function renderCart() {
       if (cart.length === 0) {
-        cartItemsEl.innerHTML = '<div class="cart-empty">Nenhuma aposta selecionada</div>';
+        cartItemsEl.innerHTML = '<div class="cart-empty">Nenhuma aposta</div>';
         return;
       }
       cartItemsEl.innerHTML = cart.map(item => 
@@ -534,14 +629,6 @@
       saveState();
     });
 
-    // SALVAR ESTADO
-    function saveState() {
-      localStorage.setItem('betsim_balance', balance.toString());
-      localStorage.setItem('betsim_cart', JSON.stringify(cart));
-      localStorage.setItem('betsim_history', JSON.stringify(history.slice(0, 20)));
-    }
-
-    // HISTÓRICO
     function addToHistory(name, won, profit) {
       history.unshift({
         name,
@@ -556,7 +643,7 @@
 
     function renderHistory() {
       if (history.length === 0) {
-        historyListEl.innerHTML = '<li class="history-item"><span>Nenhuma atividade ainda</span><span></span></li>';
+        historyListEl.innerHTML = '<li class="history-item"><span>Nenhuma atividade</span><span></span></li>';
         return;
       }
       historyListEl.innerHTML = history.map(item => {
@@ -568,7 +655,7 @@
       }).join('');
     }
 
-    // JOGOS DO CASSINO
+    // --- EFEITOS VISUAIS DOS JOGOS ---
 
     // Caça-Níqueis
     const symbols = ['🍒', '🍋', '🍊', '🍇', '🔔', '7️⃣'];
@@ -578,38 +665,48 @@
       balanceEl.textContent = `R$ ${balance.toFixed(2)}`;
       saveState();
 
-      const reel1 = document.getElementById('reel1');
-      const reel2 = document.getElementById('reel2');
-      const reel3 = document.getElementById('reel3');
+      const r1 = document.getElementById('reel1');
+      const r2 = document.getElementById('reel2');
+      const r3 = document.getElementById('reel3');
       document.getElementById('slot-display').style.display = 'block';
 
-      let spins = 0;
-      const spin = setInterval(() => {
-        reel1.textContent = symbols[Math.floor(Math.random() * symbols.length)];
-        reel2.textContent = symbols[Math.floor(Math.random() * symbols.length)];
-        reel3.textContent = symbols[Math.floor(Math.random() * symbols.length)];
-        spins++;
-        if (spins > 20) {
-          clearInterval(spin);
-          const r1 = reel1.textContent;
-          const r2 = reel2.textContent;
-          const r3 = reel3.textContent;
-          const win = (r1 === r2 && r2 === r3);
-          const profit = win ? 50 : -10;
-          if (win) balance += 60; // +50 lucro (+10 retorno implícito)
-          balanceEl.textContent = `R$ ${balance.toFixed(2)}`;
-          const resEl = document.getElementById('slot-result');
-          if (win) {
-            resEl.className = 'result win';
-            resEl.textContent = '🎉 JACKPOT! Você ganhou R$50!';
-          } else {
-            resEl.className = 'result lose';
-            resEl.textContent = '😞 Tente novamente!';
-          }
-          addToHistory('Caça-Níqueis', win, profit);
-          saveState();
+      // Animação de rotação
+      [r1, r2, r3].forEach(r => r.classList.add('spinning'));
+
+      // Parar com desaceleração realista
+      setTimeout(() => {
+        r1.classList.remove('spinning');
+        r1.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+        r1.classList.add('result');
+      }, 1200);
+      setTimeout(() => {
+        r2.classList.remove('spinning');
+        r2.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+        r2.classList.add('result');
+      }, 1400);
+      setTimeout(() => {
+        r3.classList.remove('spinning');
+        const final = symbols[Math.floor(Math.random() * symbols.length)];
+        r3.textContent = final;
+        r3.classList.add('result');
+
+        const win = (r1.textContent === r2.textContent && r2.textContent === final);
+        const profit = win ? 50 : -10;
+        if (win) balance += 60;
+        balanceEl.textContent = `R$ ${balance.toFixed(2)}`;
+
+        const res = document.getElementById('slot-result');
+        res.style.display = 'block';
+        if (win) {
+          res.className = 'result win';
+          res.textContent = '🎉 JACKPOT! Você ganhou R$50!';
+        } else {
+          res.className = 'result lose';
+          res.textContent = '😞 Tente novamente!';
         }
-      }, 80);
+        addToHistory('Caça-Níqueis', win, profit);
+        saveState();
+      }, 1600);
     }
 
     // Roleta
@@ -619,28 +716,38 @@
       balanceEl.textContent = `R$ ${balance.toFixed(2)}`;
       saveState();
 
+      const container = document.getElementById('roulette-container');
+      const wheel = document.getElementById('roulette-wheel');
+      const center = document.getElementById('roulette-center');
+      const resultEl = document.getElementById('roulette-result');
+      container.style.display = 'block';
+      resultEl.style.display = 'none';
+
       const number = Math.floor(Math.random() * 37);
       const isEven = number > 0 && number % 2 === 0;
       const win = isEven;
       const profit = win ? 10 : -10;
       if (win) balance += 20;
 
-      const display = document.getElementById('roulette-display');
-      display.style.display = 'block';
-      display.textContent = number;
-      display.style.color = number === 0 ? 'green' : (isEven ? 'black' : 'red');
+      // Calcular rotação (cada número = 10.526°)
+      const extraRotations = 5; // voltas extras
+      const targetDeg = extraRotations * 360 + (36 - number) * (360 / 37);
+      wheel.style.transform = `rotate(${targetDeg}deg)`;
 
-      const resEl = document.getElementById('roulette-result');
-      resEl.style.display = 'block';
-      if (win) {
-        resEl.className = 'result win';
-        resEl.innerHTML = `✅ Número ${number} (Par)! +R$10`;
-      } else {
-        resEl.className = 'result lose';
-        resEl.innerHTML = `❌ Número ${number} (${number === 0 ? 'Zero' : 'Ímpar'})`;
-      }
-      addToHistory('Roleta', win, profit);
-      saveState();
+      setTimeout(() => {
+        center.textContent = number;
+        center.style.color = number === 0 ? 'green' : (isEven ? 'black' : 'red');
+        resultEl.style.display = 'block';
+        if (win) {
+          resultEl.className = 'result win';
+          resultEl.textContent = `✅ ${number} (Par) — +R$10`;
+        } else {
+          resultEl.className = 'result lose';
+          resultEl.textContent = `❌ ${number} (${number === 0 ? 'Zero' : 'Ímpar'})`;
+        }
+        addToHistory('Roleta', win, profit);
+        saveState();
+      }, 4100);
     }
 
     // Blackjack
@@ -650,41 +757,50 @@
       balanceEl.textContent = `R$ ${balance.toFixed(2)}`;
       saveState();
 
-      const player = Math.floor(Math.random() * 11) + 12; // 12-22
+      const player = Math.floor(Math.random() * 11) + 12;
       const dealer = Math.floor(Math.random() * 11) + 12;
-      let win = false, push = false, msg = '';
+      document.getElementById('blackjack-cards').style.display = 'flex';
+      document.getElementById('player-value').textContent = player;
+      document.getElementById('dealer-value').textContent = dealer;
 
+      // Animação de flip
+      setTimeout(() => {
+        document.getElementById('player-card').classList.add('flipped');
+      }, 300);
+      setTimeout(() => {
+        document.getElementById('dealer-card').classList.add('flipped');
+      }, 600);
+
+      let win = false, push = false;
       if (player > 21) {
-        msg = `Você estourou (${player})! Dealer: ${dealer}`;
+        // perde
       } else if (dealer > 21 || player > dealer) {
         win = true;
-        msg = `Você venceu! ${player} vs ${dealer}`;
         balance += 20;
       } else if (player === dealer) {
         push = true;
-        msg = `Empate! ${player} vs ${dealer}`;
         balance += 10;
-      } else {
-        msg = `Dealer vence! ${player} vs ${dealer}`;
       }
 
-      const resEl = document.getElementById('blackjack-result');
-      resEl.style.display = 'block';
-      if (win) {
-        resEl.className = 'result win';
-        resEl.textContent = `✅ ${msg} — +R$10`;
-        addToHistory('Blackjack', true, 10);
-      } else if (push) {
-        resEl.className = 'result neutral';
-        resEl.textContent = `➖ ${msg} — Empate`;
-        addToHistory('Blackjack', null, 0);
-      } else {
-        resEl.className = 'result lose';
-        resEl.textContent = `❌ ${msg}`;
-        addToHistory('Blackjack', false, -10);
-      }
-      balanceEl.textContent = `R$ ${balance.toFixed(2)}`;
-      saveState();
+      setTimeout(() => {
+        const res = document.getElementById('blackjack-result');
+        res.style.display = 'block';
+        if (win) {
+          res.className = 'result win';
+          res.textContent = `✅ Você venceu! ${player} vs ${dealer}`;
+          addToHistory('Blackjack', true, 10);
+        } else if (push) {
+          res.className = 'result neutral';
+          res.textContent = `➖ Empate! ${player} vs ${dealer}`;
+          addToHistory('Blackjack', null, 0);
+        } else {
+          res.className = 'result lose';
+          res.textContent = `❌ Dealer vence! ${player} vs ${dealer}`;
+          addToHistory('Blackjack', false, -10);
+        }
+        balanceEl.textContent = `R$ ${balance.toFixed(2)}`;
+        saveState();
+      }, 1200);
     }
 
     // Dados
@@ -694,28 +810,39 @@
       balanceEl.textContent = `R$ ${balance.toFixed(2)}`;
       saveState();
 
-      const d1 = Math.floor(Math.random() * 6) + 1;
-      const d2 = Math.floor(Math.random() * 6) + 1;
-      const total = d1 + d2;
+      const d1 = document.getElementById('die1');
+      const d2 = document.getElementById('die2');
+      document.getElementById('dice-container').style.display = 'flex';
+
+      d1.classList.add('rolling');
+      d2.classList.add('rolling');
+
+      const val1 = Math.floor(Math.random() * 6) + 1;
+      const val2 = Math.floor(Math.random() * 6) + 1;
+      const total = val1 + val2;
       const win = (total === 7 || total === 11);
       const profit = win ? 15 : -10;
       if (win) balance += 25;
 
-      document.getElementById('dice-display').style.display = 'block';
-      document.getElementById('die1').textContent = d1;
-      document.getElementById('die2').textContent = d2;
+      setTimeout(() => {
+        d1.classList.remove('rolling');
+        d2.classList.remove('rolling');
+        d1.textContent = val1;
+        d2.textContent = val2;
 
-      const resEl = document.getElementById('dice-result');
-      resEl.style.display = 'block';
-      if (win) {
-        resEl.className = 'result win';
-        resEl.textContent = `🎉 Total: ${total} — Você ganhou R$15!`;
-      } else {
-        resEl.className = 'result lose';
-        resEl.textContent = `😞 Total: ${total} — Tente novamente!`;
-      }
-      addToHistory('Dados', win, profit);
-      saveState();
+        const res = document.getElementById('dice-result');
+        res.style.display = 'block';
+        if (win) {
+          res.className = 'result win';
+          res.textContent = `🎉 Total: ${total} — +R$15`;
+        } else {
+          res.className = 'result lose';
+          res.textContent = `😞 Total: ${total}`;
+        }
+        addToHistory('Dados', win, profit);
+        balanceEl.textContent = `R$ ${balance.toFixed(2)}`;
+        saveState();
+      }, 900);
     }
 
     // Bingo
@@ -725,56 +852,72 @@
       balanceEl.textContent = `R$ ${balance.toFixed(2)}`;
       saveState();
 
-      // Gerar cartela (5x5, coluna B:1-15, I:16-30, N:31-45 (com * no centro), G:46-60, O:61-75)
-      const bingoCard = [];
-      const cols = [
-        { min: 1, max: 15, letter: 'B' },
-        { min: 16, max: 30, letter: 'I' },
-        { min: 31, max: 45, letter: 'N' },
-        { min: 46, max: 60, letter: 'G' },
-        { min: 61, max: 75, letter: 'O' }
-      ];
+      const cardEl = document.getElementById('bingo-card');
+      const callingEl = document.getElementById('bingo-calling');
+      cardEl.innerHTML = '';
+      cardEl.style.display = 'grid';
+      callingEl.style.display = 'block';
 
+      // Gerar cartela
+      const cols = [
+        { min: 1, max: 15 },
+        { min: 16, max: 30 },
+        { min: 31, max: 45 },
+        { min: 46, max: 60 },
+        { min: 61, max: 75 }
+      ];
+      const cells = [];
       for (let col = 0; col < 5; col++) {
-        const numbers = new Set();
-        while (numbers.size < 5) {
-          numbers.add(Math.floor(Math.random() * (cols[col].max - cols[col].min + 1)) + cols[col].min);
+        const nums = new Set();
+        while (nums.size < 5) {
+          nums.add(Math.floor(Math.random() * (cols[col].max - cols[col].min + 1)) + cols[col].min);
         }
-        const arr = Array.from(numbers);
-        if (col === 2) arr[2] = '★'; // centro livre
-        bingoCard.push(...arr);
+        const arr = Array.from(nums);
+        if (col === 2) arr[2] = '★';
+        cells.push(...arr);
       }
 
-      const cardEl = document.getElementById('bingo-card');
-      cardEl.innerHTML = '';
-      bingoCard.forEach((val, i) => {
+      cells.forEach(val => {
         const cell = document.createElement('div');
         cell.className = 'bingo-cell';
         cell.textContent = val;
         cardEl.appendChild(cell);
       });
-      cardEl.style.display = 'grid';
 
-      // Simular "chamada" — verificar se há linha completa (aleatório)
-      const win = Math.random() < 0.12; // 12% de chance
+      // Simular chamada de números
+      let called = 0;
+      const win = Math.random() < 0.15;
       const profit = win ? 40 : -10;
       if (win) balance += 50;
 
-      const resEl = document.getElementById('bingo-result');
-      resEl.style.display = 'block';
-      if (win) {
-        resEl.className = 'result win';
-        resEl.textContent = '🎉 LINHA COMPLETA! Você ganhou R$40!';
-        // Destacar uma linha (simulação visual)
-        for (let i = 10; i <= 14; i++) {
-          cardEl.children[i].classList.add('bingo-called');
+      const interval = setInterval(() => {
+        if (called >= (win ? 12 : 8)) {
+          clearInterval(interval);
+          setTimeout(() => {
+            const res = document.getElementById('bingo-result');
+            res.style.display = 'block';
+            if (win) {
+              res.className = 'result win';
+              res.textContent = '🎉 LINHA COMPLETA! +R$40';
+              // Destacar linha do meio
+              for (let i = 10; i <= 14; i++) {
+                cardEl.children[i].classList.add('bingo-called');
+              }
+            } else {
+              res.className = 'result lose';
+              res.textContent = '😞 Nenhuma linha completa';
+            }
+            addToHistory('Bingo', win, profit);
+            balanceEl.textContent = `R$ ${balance.toFixed(2)}`;
+            saveState();
+          }, 800);
+          return;
         }
-      } else {
-        resEl.className = 'result lose';
-        resEl.textContent = '😞 Nenhuma linha completa. Tente novamente!';
-      }
-      addToHistory('Bingo', win, profit);
-      saveState();
+
+        const num = Math.floor(Math.random() * 75) + 1;
+        callingEl.textContent = `Chamando: ${num}`;
+        called++;
+      }, 600);
     }
   </script>
 </body>
