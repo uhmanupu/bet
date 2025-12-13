@@ -3,22 +3,23 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>MyBank — Simulador Bancário</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏦</text></svg>">
+  <title>PindoramaBank — Seu Banco Digital</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 fill=%22%23000%22/><circle cx=%2250%22 cy=%2250%22 r=%2230%22 fill=%22%23FFD700%22/></svg>">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     :root {
-      --bg: #121212;
-      --surface: #1e1e1e;
-      --text: #f0f0f0;
-      --text-secondary: #aaa;
-      --primary: #4da6ff;
+      --bg: #000000;
+      --surface: #111111;
+      --text: #ffffff;
+      --text-secondary: #b0b0b0;
+      --primary: #FFD700;
+      --primary-dark: #e6c200;
       --success: #4caf50;
       --danger: #f44336;
       --border: #333;
-      --shadow: 0 4px 20px rgba(0,0,0,0.4);
-      --radius: 16px;
-      --font: 'Segoe UI', system-ui, sans-serif;
+      --shadow: 0 6px 24px rgba(255, 215, 0, 0.15);
+      --radius: 18px;
+      --font: 'Segoe UI', 'Helvetica Neue', system-ui, sans-serif;
     }
     body {
       font-family: var(--font);
@@ -28,221 +29,338 @@
       padding: 20px;
     }
     .container {
-      max-width: 500px;
+      max-width: 520px;
       margin: 0 auto;
     }
 
-    /* Tela de Login */
+    /* Login */
     #login-screen {
       background: var(--surface);
       border-radius: var(--radius);
-      padding: 30px;
+      padding: 32px;
       box-shadow: var(--shadow);
-      border: 1px solid var(--border);
+      border: 1px solid #333;
     }
     #login-screen h2 {
       text-align: center;
       margin-bottom: 25px;
-      font-size: 1.8rem;
+      font-size: 2.1rem;
+      font-weight: 800;
       color: var(--primary);
+      letter-spacing: -0.5px;
     }
     .input-group {
-      margin-bottom: 20px;
+      margin-bottom: 22px;
     }
     .input-group label {
       display: block;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
       font-weight: 600;
       color: var(--text-secondary);
+      font-size: 0.95rem;
     }
     .input-group input {
       width: 100%;
-      padding: 14px;
-      border-radius: 12px;
+      padding: 15px;
+      border-radius: 14px;
       border: 1px solid var(--border);
-      background: #2a2a2a;
+      background: #1a1a1a;
       color: white;
-      font-size: 1.1rem;
+      font-size: 1.05rem;
+      caret-color: var(--primary);
     }
     .btn {
       width: 100%;
-      padding: 14px;
+      padding: 15px;
       background: var(--primary);
       color: #000;
       border: none;
-      border-radius: 12px;
-      font-weight: 700;
+      border-radius: 14px;
+      font-weight: 800;
       font-size: 1.1rem;
       cursor: pointer;
-      transition: background 0.2s;
+      transition: background 0.2s, transform 0.1s;
+      letter-spacing: -0.3px;
     }
     .btn:hover {
-      background: #3399ff;
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+    }
+    .btn:active {
+      transform: translateY(0);
     }
 
-    /* App (após login) */
-    #app {
-      display: none;
-    }
+    /* App */
+    #app { display: none; }
     header {
       text-align: center;
-      margin-bottom: 25px;
+      margin-bottom: 28px;
     }
     header h1 {
-      font-size: 2.1rem;
-      font-weight: 800;
-    }
-    header h1 span {
-      color: var(--primary);
+      font-size: 2.4rem;
+      font-weight: 900;
+      background: linear-gradient(90deg, #ffffff, var(--primary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
 
     .card {
       background: var(--surface);
       border-radius: var(--radius);
-      padding: 22px;
-      margin-bottom: 22px;
+      padding: 24px;
+      margin-bottom: 24px;
       box-shadow: var(--shadow);
-      border: 1px solid var(--border);
+      border: 1px solid #333;
     }
 
-    .balance {
-      font-size: 2.2rem;
-      font-weight: 800;
-      color: var(--success);
+    .balance-card {
       text-align: center;
+      padding: 28px 24px;
+    }
+    .balance-label {
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+    }
+    .balance {
+      font-size: 2.5rem;
+      font-weight: 900;
+      background: linear-gradient(90deg, var(--primary), #ffffff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
       margin: 10px 0;
+    }
+    .account-info {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      margin-top: 12px;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin: 20px 0;
+    }
+    .info-item {
+      background: #1a1a1a;
+      padding: 14px;
+      border-radius: 14px;
+      text-align: center;
+    }
+    .info-value {
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: var(--primary);
+      margin-top: 6px;
     }
 
     .action-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 15px;
-      margin: 20px 0;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin: 22px 0;
     }
     .action-btn {
-      padding: 14px;
-      background: #2a2a2a;
+      padding: 16px 8px;
+      background: #1a1a1a;
       border: 1px solid var(--border);
-      border-radius: 12px;
+      border-radius: 16px;
       color: var(--text);
       font-weight: 700;
+      font-size: 0.85rem;
       cursor: pointer;
-      transition: background 0.2s;
+      transition: all 0.2s;
       text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
     }
     .action-btn:hover {
-      background: #333;
+      background: #252525;
+      border-color: var(--primary);
+      transform: translateY(-3px);
+    }
+    .action-icon {
+      font-size: 1.4rem;
     }
 
     .form-group {
-      margin: 15px 0;
+      margin: 16px 0;
     }
-    .form-group input {
+    .form-group input, .form-group select {
       width: 100%;
-      padding: 13px;
-      border-radius: 10px;
+      padding: 14px;
+      border-radius: 12px;
       border: 1px solid var(--border);
-      background: #2a2a2a;
+      background: #1a1a1a;
       color: white;
       font-size: 1rem;
     }
 
+    .card-virtual {
+      background: linear-gradient(135deg, #1a1a1a, #0d0d0d);
+      border: 2px solid var(--primary);
+      border-radius: 16px;
+      padding: 20px;
+      text-align: center;
+      margin-top: 15px;
+    }
+    .card-number {
+      font-size: 1.3rem;
+      letter-spacing: 2px;
+      margin: 10px 0;
+      font-family: monospace;
+    }
+    .card-footer {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 15px;
+      font-size: 0.95rem;
+    }
+
     .transaction-list {
-      max-height: 300px;
+      max-height: 320px;
       overflow-y: auto;
       padding-right: 10px;
     }
     .transaction {
-      padding: 12px 0;
-      border-bottom: 1px solid #333;
+      padding: 14px 0;
+      border-bottom: 1px solid #252525;
       display: flex;
       justify-content: space-between;
+      align-items: flex-start;
     }
     .transaction:last-child {
       border: none;
     }
     .transaction-desc {
       font-size: 0.95rem;
+      max-width: 70%;
     }
     .transaction-amount {
-      font-weight: 700;
+      font-weight: 800;
+      white-space: nowrap;
+      text-align: right;
     }
-    .credit { color: var(--success); }
+    .credit { color: #4caf50; }
     .debit { color: var(--danger); }
 
+    .notification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: var(--surface);
+      color: white;
+      padding: 14px 20px;
+      border-radius: 12px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+      border-left: 4px solid var(--primary);
+      z-index: 1000;
+      transform: translateX(200%);
+      transition: transform 0.3s ease-out;
+    }
+    .notification.show {
+      transform: translateX(0);
+    }
+
     .logout {
-      margin-top: 20px;
-      background: #333 !important;
+      background: #252525 !important;
       color: var(--text) !important;
+      border: 1px solid #333 !important;
     }
     .logout:hover {
-      background: #444 !important;
+      background: #333 !important;
+      transform: translateY(-2px) !important;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <!-- Tela de Login -->
+    <!-- Login -->
     <div id="login-screen">
-      <h2>🏦 MyBank</h2>
+      <h2>🏦 PindoramaBank</h2>
       <div class="input-group">
         <label for="cpf">CPF (apenas números)</label>
-        <input type="text" id="cpf" placeholder="12345678900" maxlength="11" />
+        <input type="text" id="cpf" placeholder="00011122233" maxlength="11" autocomplete="off" />
       </div>
       <div class="input-group">
         <label for="password">Senha</label>
-        <input type="password" id="password" placeholder="••••••••" />
+        <input type="password" id="password" placeholder="••••••••" autocomplete="off" />
       </div>
-      <button class="btn" onclick="login()">Entrar</button>
-      <p style="text-align:center; margin-top:15px; font-size:0.9rem; color:var(--text-secondary);">
-        Use qualquer CPF e senha para testar.
+      <button class="btn" onclick="login()">Acessar Conta</button>
+      <p style="text-align:center; margin-top:18px; font-size:0.88rem; color:var(--text-secondary);">
+        Ambiente seguro • Dados simulados
       </p>
     </div>
 
-    <!-- App Principal -->
+    <!-- App -->
     <div id="app">
       <header>
-        <h1>My<span>Bank</span></h1>
-        <p>Conta digital simulada</p>
+        <h1>Pindorama<span>Bank</span></h1>
+        <p style="color:var(--text-secondary); margin-top:8px;">Sua conta digital completa</p>
       </header>
 
-      <div class="card">
-        <div>Saldo Disponível</div>
+      <!-- Saldo -->
+      <div class="card balance-card">
+        <div class="balance-label">Saldo Disponível</div>
         <div class="balance" id="balance">R$ 0,00</div>
-        <div style="text-align:center; font-size:0.9rem; color:var(--text-secondary);">
-          Conta Poupança • Ag: 0001 Cc: 123456-7
+        <div class="account-info">Ag: 0001 • Cc: 123456-7 • Poupança Automática</div>
+      </div>
+
+      <!-- Informações rápidas -->
+      <div class="card">
+        <div class="info-grid">
+          <div class="info-item">
+            <div style="color:var(--text-secondary);">Limite Crédito</div>
+            <div class="info-value" id="credit-limit">R$ 2.500</div>
+          </div>
+          <div class="info-item">
+            <div style="color:var(--text-secondary);">Rendimento</div>
+            <div class="info-value" id="yield">0,50% a.m.</div>
+          </div>
         </div>
       </div>
 
+      <!-- Ações -->
       <div class="card">
         <div class="action-grid">
-          <div class="action-btn" onclick="showTransfer()">📤 Transferir</div>
-          <div class="action-btn" onclick="showReceive()">📥 Receber</div>
+          <div class="action-btn" onclick="showTransfer()">
+            <div class="action-icon">📤</div>
+            <div>Transferir</div>
+          </div>
+          <div class="action-btn" onclick="showReceive()">
+            <div class="action-icon">📥</div>
+            <div>Receber</div>
+          </div>
+          <div class="action-btn" onclick="showInvest()">
+            <div class="action-icon">📈</div>
+            <div>Poupança</div>
+          </div>
+          <div class="action-btn" onclick="showLoan()">
+            <div class="action-icon">💰</div>
+            <div>Empréstimo</div>
+          </div>
+          <div class="action-btn" onclick="showCard()">
+            <div class="action-icon">💳</div>
+            <div>Cartão</div>
+          </div>
+          <div class="action-btn" onclick="showStatement()">
+            <div class="action-icon">📄</div>
+            <div>Extrato</div>
+          </div>
         </div>
 
-        <div id="transfer-form" style="display:none;">
-          <div class="form-group">
-            <input type="text" id="transfer-cpf" placeholder="CPF do destinatário" maxlength="11" />
-          </div>
-          <div class="form-group">
-            <input type="number" id="transfer-amount" placeholder="Valor (R$)" min="0.01" step="0.01" />
-          </div>
-          <button class="btn" onclick="performTransfer()">Confirmar Transferência</button>
-          <button class="btn logout" style="margin-top:10px;" onclick="hideTransfer()">Cancelar</button>
-        </div>
-
-        <div id="receive-form" style="display:none; text-align:center;">
-          <p style="margin-bottom:15px;">Seu CPF para recebimento:</p>
-          <p style="font-size:1.2rem; font-weight:700; color:var(--primary);" id="user-cpf"></p>
-          <p style="font-size:0.9rem; color:var(--text-secondary); margin-top:15px;">
-            Compartilhe seu CPF com quem quiser te pagar.
-          </p>
-          <button class="btn logout" style="margin-top:20px;" onclick="hideReceive()">Fechar</button>
-        </div>
+        <!-- Formulários dinâmicos -->
+        <div id="dynamic-form" style="display:none; margin-top:20px;"></div>
       </div>
 
+      <!-- Histórico -->
       <div class="card">
-        <h3 style="margin-bottom:15px; color:var(--primary);">Histórico</h3>
+        <h3 style="margin-bottom:16px; color:var(--primary); font-weight:800;">Últimas Movimentações</h3>
         <div class="transaction-list" id="transactions">
           <div style="text-align:center; color:var(--text-secondary);">Nenhuma transação ainda</div>
         </div>
@@ -252,53 +370,68 @@
     </div>
   </div>
 
+  <!-- Notificação -->
+  <div class="notification" id="notification"></div>
+
   <script>
-    // Estado inicial
+    // Estado
     let currentUser = null;
-    const defaultBalance = 1250.75;
-    const transactionsKey = 'mybank_transactions';
-    const userKey = 'mybank_user';
+    const initialBalance = 1850.90;
+    const creditLimit = 2500.00;
+    const cardData = {
+      number: "5555 6666 7777 8888",
+      cvv: "123",
+      expiry: "12/28"
+    };
 
     // Inicializar
     document.addEventListener('DOMContentLoaded', () => {
-      const savedUser = localStorage.getItem(userKey);
-      if (savedUser) {
-        currentUser = JSON.parse(savedUser);
+      const saved = localStorage.getItem('pindorama_user');
+      if (saved) {
+        currentUser = JSON.parse(saved);
         showApp();
         loadTransactions();
       }
     });
 
+    // Notificação
+    function notify(message, type = 'info') {
+      const notif = document.getElementById('notification');
+      notif.textContent = message;
+      notif.className = 'notification show';
+      setTimeout(() => notif.classList.remove('show'), 3000);
+    }
+
     // Login
     function login() {
       const cpf = document.getElementById('cpf').value.replace(/\D/g, '');
       const password = document.getElementById('password').value;
-
       if (cpf.length !== 11 || password.length < 4) {
-        alert('Por favor, insira um CPF válido e uma senha com pelo menos 4 caracteres.');
+        notify('CPF ou senha inválidos.');
         return;
       }
-
-      // Simular login (qualquer CPF/senha funciona)
-      currentUser = { cpf, balance: defaultBalance };
-      localStorage.setItem(userKey, JSON.stringify(currentUser));
+      currentUser = { 
+        cpf, 
+        balance: initialBalance,
+        savings: 0,
+        loan: 0
+      };
+      localStorage.setItem('pindorama_user', JSON.stringify(currentUser));
       showApp();
       loadTransactions();
+      notify('Bem-vindo ao PindoramaBank!');
     }
 
-    // Mostrar app
     function showApp() {
       document.getElementById('login-screen').style.display = 'none';
       document.getElementById('app').style.display = 'block';
       document.getElementById('balance').textContent = `R$ ${currentUser.balance.toFixed(2).replace('.', ',')}`;
-      document.getElementById('user-cpf').textContent = formatCPF(currentUser.cpf);
     }
 
-    // Logout
     function logout() {
       currentUser = null;
-      localStorage.removeItem(userKey);
-      localStorage.removeItem(transactionsKey);
+      localStorage.removeItem('pindorama_user');
+      localStorage.removeItem('pindorama_transactions');
       document.getElementById('app').style.display = 'none';
       document.getElementById('login-screen').style.display = 'block';
       document.getElementById('cpf').value = '';
@@ -310,82 +443,155 @@
       return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
     }
 
-    // Mostrar/ocultar formulários
+    // Mostrar formulários
     function showTransfer() {
-      document.getElementById('transfer-form').style.display = 'block';
-      document.getElementById('receive-form').style.display = 'none';
+      document.getElementById('dynamic-form').innerHTML = `
+        <div class="form-group">
+          <input type="text" id="dest-cpf" placeholder="CPF do destinatário" maxlength="11" />
+        </div>
+        <div class="form-group">
+          <input type="number" id="amount" placeholder="Valor (R$)" min="1" step="0.01" />
+        </div>
+        <button class="btn" onclick="doTransfer()">Confirmar</button>
+        <button class="btn logout" style="margin-top:12px;" onclick="hideForm()">Cancelar</button>
+      `;
     }
-    function hideTransfer() {
-      document.getElementById('transfer-form').style.display = 'none';
-    }
+
     function showReceive() {
-      document.getElementById('receive-form').style.display = 'block';
-      document.getElementById('transfer-form').style.display = 'none';
-    }
-    function hideReceive() {
-      document.getElementById('receive-form').style.display = 'none';
+      document.getElementById('dynamic-form').innerHTML = `
+        <p style="text-align:center; margin-bottom:15px; color:var(--text-secondary);">
+          Use seu CPF para receber pagamentos:
+        </p>
+        <p style="font-size:1.3rem; font-weight:800; color:var(--primary); text-align:center;">
+          ${formatCPF(currentUser.cpf)}
+        </p>
+        <button class="btn logout" style="margin-top:20px;" onclick="hideForm()">Fechar</button>
+      `;
     }
 
-    // Realizar transferência
-    function performTransfer() {
-      const destCpf = document.getElementById('transfer-cpf').value.replace(/\D/g, '');
-      const amount = parseFloat(document.getElementById('transfer-amount').value);
+    function showInvest() {
+      document.getElementById('dynamic-form').innerHTML = `
+        <p style="margin-bottom:15px; color:var(--text);">Rendimento: 0,50% ao mês</p>
+        <div class="form-group">
+          <input type="number" id="invest-amount" placeholder="Valor a investir (R$)" min="10" step="0.01" />
+        </div>
+        <button class="btn" onclick="doInvest()">Investir na Poupança</button>
+        <button class="btn logout" style="margin-top:12px;" onclick="hideForm()">Cancelar</button>
+      `;
+    }
 
-      if (destCpf.length !== 11) {
-        alert('CPF do destinatário inválido.');
-        return;
-      }
-      if (isNaN(amount) || amount <= 0) {
-        alert('Valor inválido.');
+    function showLoan() {
+      document.getElementById('dynamic-form').innerHTML = `
+        <p style="margin-bottom:15px; color:var(--text);">Até R$ 2.500 • 3,5% ao mês</p>
+        <div class="form-group">
+          <input type="number" id="loan-amount" placeholder="Valor do empréstimo (R$)" min="100" max="2500" step="0.01" />
+        </div>
+        <button class="btn" onclick="doLoan()">Solicitar Empréstimo</button>
+        <button class="btn logout" style="margin-top:12px;" onclick="hideForm()">Cancelar</button>
+      `;
+    }
+
+    function showCard() {
+      document.getElementById('dynamic-form').innerHTML = `
+        <div class="card-virtual">
+          <div style="font-size:0.9rem; color:var(--text-secondary);">Cartão de Débito Virtual</div>
+          <div class="card-number">${cardData.number}</div>
+          <div class="card-footer">
+            <span>CVV: ${cardData.cvv}</span>
+            <span>Venc: ${cardData.expiry}</span>
+          </div>
+        </div>
+        <button class="btn logout" style="margin-top:20px;" onclick="hideForm()">Fechar</button>
+      `;
+    }
+
+    function showStatement() {
+      document.getElementById('dynamic-form').innerHTML = `
+        <p style="text-align:center; color:var(--text);">Extrato completo disponível no app mobile.</p>
+        <button class="btn logout" style="margin-top:20px;" onclick="hideForm()">Fechar</button>
+      `;
+    }
+
+    function hideForm() {
+      document.getElementById('dynamic-form').innerHTML = '';
+    }
+
+    // Ações
+    function doTransfer() {
+      const dest = document.getElementById('dest-cpf').value.replace(/\D/g, '');
+      const amount = parseFloat(document.getElementById('amount').value);
+      if (dest.length !== 11 || isNaN(amount) || amount <= 0) {
+        notify('Dados inválidos.');
         return;
       }
       if (amount > currentUser.balance) {
-        alert('Saldo insuficiente.');
+        notify('Saldo insuficiente.');
         return;
       }
-
-      // Atualizar saldo
       currentUser.balance -= amount;
-      localStorage.setItem(userKey, JSON.stringify(currentUser));
-      document.getElementById('balance').textContent = `R$ ${currentUser.balance.toFixed(2).replace('.', ',')}`;
-
-      // Adicionar transações
-      addTransaction(-amount, `Transferência para ${formatCPF(destCpf)}`);
-      // (Em um app real, o destinatário receberia aqui)
-
-      alert('Transferência realizada com sucesso!');
-      hideTransfer();
-      document.getElementById('transfer-cpf').value = '';
-      document.getElementById('transfer-amount').value = '';
+      saveUser();
+      addTransaction(-amount, `Transferência para ${formatCPF(dest)}`);
+      notify('Transferência realizada com sucesso!');
+      hideForm();
     }
 
-    // Adicionar transação
-    function addTransaction(amount, description) {
-      const transactions = JSON.parse(localStorage.getItem(transactionsKey) || '[]');
-      const transaction = {
+    function doInvest() {
+      const amount = parseFloat(document.getElementById('invest-amount').value);
+      if (isNaN(amount) || amount < 10 || amount > currentUser.balance) {
+        notify('Valor inválido ou saldo insuficiente.');
+        return;
+      }
+      currentUser.balance -= amount;
+      currentUser.savings = (currentUser.savings || 0) + amount;
+      saveUser();
+      addTransaction(-amount, 'Aplicação na Poupança');
+      notify('Investimento realizado!');
+      hideForm();
+    }
+
+    function doLoan() {
+      const amount = parseFloat(document.getElementById('loan-amount').value);
+      if (isNaN(amount) || amount < 100 || amount > creditLimit) {
+        notify('Valor fora do limite permitido.');
+        return;
+      }
+      currentUser.balance += amount;
+      currentUser.loan = (currentUser.loan || 0) + amount;
+      saveUser();
+      addTransaction(amount, 'Empréstimo Pessoal');
+      notify('Empréstimo creditado na conta!');
+      hideForm();
+    }
+
+    // Utilitários
+    function saveUser() {
+      localStorage.setItem('pindorama_user', JSON.stringify(currentUser));
+      document.getElementById('balance').textContent = `R$ ${currentUser.balance.toFixed(2).replace('.', ',')}`;
+    }
+
+    function addTransaction(amount, desc) {
+      const key = 'pindorama_transactions';
+      const list = JSON.parse(localStorage.getItem(key) || '[]');
+      list.unshift({
         id: Date.now(),
         amount,
-        description,
-        date: new Date().toLocaleString('pt-BR')
-      };
-      transactions.unshift(transaction);
-      localStorage.setItem(transactionsKey, JSON.stringify(transactions));
+        desc,
+        date: new Date().toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })
+      });
+      localStorage.setItem(key, JSON.stringify(list));
       loadTransactions();
     }
 
-    // Carregar transações
     function loadTransactions() {
-      const transactions = JSON.parse(localStorage.getItem(transactionsKey) || '[]');
+      const list = JSON.parse(localStorage.getItem('pindorama_transactions') || '[]');
       const container = document.getElementById('transactions');
-      
-      if (transactions.length === 0) {
+      if (list.length === 0) {
         container.innerHTML = '<div style="text-align:center; color:var(--text-secondary);">Nenhuma transação ainda</div>';
         return;
       }
-
-      container.innerHTML = transactions.map(t => `
+      container.innerHTML = list.slice(0, 8).map(t => `
         <div class="transaction">
-          <div class="transaction-desc">${t.description}<br><small>${t.date}</small></div>
+          <div class="transaction-desc">${t.desc}<br><small>${t.date}</small></div>
           <div class="transaction-amount ${t.amount >= 0 ? 'credit' : 'debit'}">
             ${t.amount >= 0 ? '+' : ''} R$ ${Math.abs(t.amount).toFixed(2).replace('.', ',')}
           </div>
