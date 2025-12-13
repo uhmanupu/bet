@@ -1,4 +1,6 @@
-/* Reset & Base */
+/* ===============
+   RESET & VARIÁVEIS
+================= */
 * {
   margin: 0;
   padding: 0;
@@ -10,37 +12,51 @@
   --secondary: #1b263b;
   --accent: #415a77;
   --highlight: #e0e1dd;
-  --success: #2e8b57;
-  --warning: #d94f4f;
   --text: #f1faee;
-  --font: 'Inter', sans-serif;
+  --success-bg: #d4edda;
+  --success-text: #155724;
+  --fail-bg: #f8d7da;
+  --fail-text: #721c24;
+  --light-gray: #f8f9fa;
+  --font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 body {
   font-family: var(--font);
-  background-color: #f9f9f9;
+  background-color: #ffffff;
   color: #333;
   line-height: 1.6;
 }
 
 .container {
   width: 90%;
-  max-width: 1200px;
+  max-width: 1100px;
   margin: 0 auto;
   padding: 0 15px;
 }
 
-/* Header */
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* ===============
+   HEADER
+================= */
 .header {
   background-color: var(--primary);
   color: var(--text);
   padding: 1rem 0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
 
 .header .container {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
 }
 
 .logo h1 {
@@ -55,133 +71,165 @@ body {
 .nav ul {
   display: flex;
   list-style: none;
-  gap: 1.5rem;
+  gap: 1.25rem;
+  flex-wrap: wrap;
 }
 
 .nav a {
   color: var(--text);
-  text-decoration: none;
   font-weight: 500;
-  transition: color 0.2s;
+  padding: 0.25rem 0;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s;
 }
 
-.nav a:hover {
+.nav a:hover, .nav a:focus {
   color: #4cc9f0;
+  border-bottom-color: #4cc9f0;
 }
 
-.btn-login {
-  background: #4cc9f0;
-  color: var(--primary);
-  padding: 0.4rem 1rem;
-  border-radius: 4px;
-  font-weight: 600;
-}
-
-/* Hero */
+/* ===============
+   HERO
+================= */
 .hero {
   background: linear-gradient(135deg, var(--secondary), var(--primary));
   color: var(--text);
-  padding: 3rem 0;
+  padding: 4rem 0;
   text-align: center;
 }
 
-.hero h2 {
-  font-size: 2.2rem;
+.hero h1 {
+  font-size: 2.4rem;
   margin-bottom: 1rem;
+  font-weight: 700;
 }
 
 .tagline {
-  font-size: 1.1rem;
+  font-size: 1.15rem;
   max-width: 700px;
   margin: 0 auto 1.5rem;
-  opacity: 0.9;
+  opacity: 0.95;
 }
 
 .disclaimer {
-  background: rgba(0, 0, 0, 0.2);
+  background: rgba(0, 0, 0, 0.25);
   display: inline-block;
-  padding: 0.5rem 1.5rem;
+  padding: 0.6rem 1.8rem;
   border-radius: 30px;
-  font-size: 0.95rem;
-  margin-top: 1rem;
+  font-size: 1rem;
+  margin-top: 1.2rem;
+  font-weight: 500;
 }
 
-/* Main */
-.main {
-  padding: 2.5rem 0;
+/* ===============
+   SECTIONS
+================= */
+.section {
+  padding: 3rem 0;
 }
 
-.main h2 {
+.section h2 {
   text-align: center;
-  margin-bottom: 2rem;
+  margin-bottom: 1.8rem;
   color: var(--primary);
-  font-size: 1.8rem;
+  font-size: 2rem;
+  font-weight: 700;
 }
 
+.bg-light {
+  background-color: var(--light-gray);
+}
+
+.steps {
+  max-width: 700px;
+  margin: 0 auto;
+  padding-left: 1.5rem;
+  font-size: 1.05rem;
+  color: #444;
+}
+
+.steps li {
+  margin-bottom: 1rem;
+}
+
+/* ===============
+   MATCHES
+================= */
 .matches-grid {
   display: grid;
-  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.8rem;
   margin-bottom: 2rem;
 }
 
 .match-card {
   background: white;
-  border-radius: 12px;
-  padding: 1.2rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  transition: transform 0.2s;
+  border-radius: 14px;
+  padding: 1.5rem;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+  transition: transform 0.25s, box-shadow 0.25s;
+  border: 1px solid #eee;
 }
 
 .match-card:hover {
-  transform: translateY(-4px);
+  transform: translateY(-5px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
 }
 
 .match-teams {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1rem;
+  margin-bottom: 1.2rem;
+  flex-wrap: wrap;
+  gap: 0.8rem;
 }
 
 .vs {
-  color: #888;
-  font-weight: 600;
-  font-size: 0.9rem;
+  color: #777;
+  font-weight: 700;
+  font-size: 0.95rem;
+  background: #f0f0f0;
+  padding: 0.2rem 0.6rem;
+  border-radius: 4px;
 }
 
 .team {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.2rem;
+  gap: 0.3rem;
+  min-width: 100px;
 }
 
 .team-name {
   font-weight: 600;
   color: var(--secondary);
+  font-size: 1.1rem;
 }
 
 .odds {
-  font-size: 0.9rem;
+  font-size: 1rem;
   color: var(--accent);
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .match-actions {
   display: flex;
   justify-content: center;
-  gap: 0.6rem;
+  gap: 0.7rem;
   flex-wrap: wrap;
 }
 
 .btn {
-  padding: 0.5rem 1rem;
+  padding: 0.6rem 1.1rem;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
   font-family: var(--font);
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
+  font-size: 0.95rem;
 }
 
 .btn.bet {
@@ -194,58 +242,78 @@ body {
   transform: scale(1.03);
 }
 
-/* Simulation Result */
+/* ===============
+   RESULTADO
+================= */
 .simulation-result {
   margin-top: 2rem;
-  padding: 1.2rem;
-  border-radius: 10px;
+  padding: 1.3rem;
+  border-radius: 12px;
   font-weight: 600;
   text-align: center;
   display: none;
+  font-size: 1.1rem;
 }
 
 .simulation-result.success {
-  background-color: #d4edda;
-  color: #155724;
+  background-color: var(--success-bg);
+  color: var(--success-text);
   display: block;
 }
 
 .simulation-result.fail {
-  background-color: #f8d7da;
-  color: #721c24;
+  background-color: var(--fail-bg);
+  color: var(--fail-text);
   display: block;
 }
 
-/* Footer */
+/* ===============
+   FOOTER
+================= */
 .footer {
   background: var(--primary);
   color: var(--highlight);
-  padding: 2rem 0;
+  padding: 2.5rem 0 2rem;
   text-align: center;
-  font-size: 0.9rem;
-  line-height: 1.6;
+  font-size: 0.95rem;
+  line-height: 1.7;
 }
 
-/* Responsive */
+.footer a {
+  color: #4cc9f0;
+  text-decoration: underline;
+}
+
+.footer a:hover {
+  color: #a9def9;
+}
+
+/* ===============
+   RESPONSIVO
+================= */
 @media (max-width: 768px) {
-  .matches-grid {
-    grid-template-columns: 1fr;
+  .hero h1 {
+    font-size: 1.9rem;
   }
 
-  .nav ul {
-    display: none;
+  .hero {
+    padding: 2.5rem 0;
   }
 
-  .hero h2 {
+  .section {
+    padding: 2rem 0;
+  }
+
+  .section h2 {
     font-size: 1.7rem;
   }
 
   .match-teams {
     flex-direction: column;
-    gap: 0.8rem;
+    text-align: center;
   }
 
   .vs {
-    margin: 0.3rem 0;
+    margin: 0.5rem 0;
   }
 }
