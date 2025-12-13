@@ -3,12 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <meta name="description" content="Plataforma fictícia de simulação de apostas esportivas para fins educacionais." />
+  <meta name="description" content="BetSim — Simulador educacional de apostas esportivas (fictício). Nenhuma aposta real." />
   <title>BetSim | Simulador Esportivo (Fictício)</title>
-  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="style.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Favicon simples -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚽</text></svg>">
 </head>
 <body>
   <!-- Header -->
@@ -19,10 +21,9 @@
       </div>
       <nav class="nav">
         <ul>
-          <li><a href="#">Jogos</a></li>
-          <li><a href="#">Resultados</a></li>
-          <li><a href="#">Estatísticas</a></li>
-          <li><a href="#" class="btn-login">Login</a></li>
+          <li><a href="#jogos">Jogos</a></li>
+          <li><a href="#como-funciona">Como Funciona</a></li>
+          <li><a href="#sobre">Sobre</a></li>
         </ul>
       </nav>
     </div>
@@ -31,91 +32,62 @@
   <!-- Hero -->
   <section class="hero">
     <div class="container">
-      <h2>Apostas Esportivas Simuladas</h2>
-      <p class="tagline">Explore um ambiente seguro e educativo para entender como funcionam as apostas esportivas — sem riscos reais.</p>
+      <h1>Simule Apostas Esportivas com Segurança</h1>
+      <p class="tagline">Explore um ambiente educacional para entender odds, mercados e estratégias — sem riscos financeiros.</p>
       <div class="disclaimer">
-        ⚠️ Este é um <strong>simulador fictício</strong>. Nenhuma aposta envolve dinheiro real.
+        ⚠️ <strong>Este é um simulador fictício.</strong> Nenhuma aposta envolve dinheiro real ou dados pessoais.
       </div>
     </div>
   </section>
 
-  <!-- Upcoming Matches -->
-  <main class="main">
+  <!-- Sobre -->
+  <section id="sobre" class="section">
+    <div class="container">
+      <h2>Sobre o BetSim</h2>
+      <p>
+        O BetSim é um projeto educacional desenvolvido para fins de demonstração de interface e lógica de simulação.
+        Não é uma casa de apostas, nem está associado a nenhuma operadora real. O objetivo é ensinar conceitos básicos
+        de apostas esportivas de forma segura e ética.
+      </p>
+    </div>
+  </section>
+
+  <!-- Como Funciona -->
+  <section id="como-funciona" class="section bg-light">
+    <div class="container">
+      <h2>Como Funciona?</h2>
+      <ul class="steps">
+        <li>Escolha um jogo e uma opção de aposta (ex: vitória, empate).</li>
+        <li>Clique em "Apostar" para simular sua escolha.</li>
+        <li>O sistema gera um resultado aleatório (35% de chance de "acerto").</li>
+        <li>Tudo é fictício — sem cadastro, sem pagamento, sem risco.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- Jogos -->
+  <section id="jogos" class="section">
     <div class="container">
       <h2>Próximos Jogos</h2>
-      <div class="matches-grid">
-        <!-- Match 1 -->
-        <div class="match-card">
-          <div class="match-teams">
-            <div class="team">
-              <span class="team-name">Brasil</span>
-              <span class="odds">1.85</span>
-            </div>
-            <div class="vs">VS</div>
-            <div class="team">
-              <span class="team-name">Argentina</span>
-              <span class="odds">4.20</span>
-            </div>
-          </div>
-          <div class="match-actions">
-            <button class="btn bet" data-team="Brasil">Apostar</button>
-            <button class="btn bet" data-team="Empate">Empate (3.40)</button>
-            <button class="btn bet" data-team="Argentina">Apostar</button>
-          </div>
-        </div>
-
-        <!-- Match 2 -->
-        <div class="match-card">
-          <div class="match-teams">
-            <div class="team">
-              <span class="team-name">Manchester City</span>
-              <span class="odds">1.60</span>
-            </div>
-            <div class="vs">VS</div>
-            <div class="team">
-              <span class="team-name">Liverpool</span>
-              <span class="odds">5.00</span>
-            </div>
-          </div>
-          <div class="match-actions">
-            <button class="btn bet" data-team="Manchester City">Apostar</button>
-            <button class="btn bet" data-team="Empate">Empate (3.80)</button>
-            <button class="btn bet" data-team="Liverpool">Apostar</button>
-          </div>
-        </div>
-
-        <!-- Match 3 -->
-        <div class="match-card">
-          <div class="match-teams">
-            <div class="team">
-              <span class="team-name">Lakers</span>
-              <span class="odds">1.90</span>
-            </div>
-            <div class="vs">VS</div>
-            <div class="team">
-              <span class="team-name">Warriors</span>
-              <span class="odds">1.90</span>
-            </div>
-          </div>
-          <div class="match-actions">
-            <button class="btn bet" data-team="Lakers">Apostar</button>
-            <button class="btn bet" data-team="Warriors">Apostar</button>
-          </div>
-        </div>
+      <div class="matches-grid" id="matches-container">
+        <!-- Jogos carregados via JS -->
       </div>
-
       <div id="simulation-result" class="simulation-result"></div>
     </div>
-  </main>
+  </section>
 
   <!-- Footer -->
   <footer class="footer">
     <div class="container">
-      <p>© 2025 BetSim — Simulador Educacional de Apostas Esportivas</p>
-      <p>Este site não oferece apostas reais. Não é um serviço regulamentado. Apenas para fins de demonstração e aprendizado.</p>
+      <p>© 2025 BetSim — Projeto Educacional</p>
+      <p>Este site é <strong>fictício</strong> e não oferece apostas reais. Não é regulamentado por autoridade alguma.</p>
+      <p>
+        Código-fonte disponível no 
+        <a href="https://github.com/seu-usuario/seu-repositorio" target="_blank" rel="noopener">GitHub</a>.
+      </p>
     </div>
   </footer>
 
-  <script src="js/main.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
