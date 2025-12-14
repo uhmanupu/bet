@@ -5,506 +5,348 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>PindoramaBank</title>
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    :root {
-      --bg: #000000;
-      --surface: #111111;
-      --text: #ffffff;
-      --text-secondary: #b0b0b0;
-      --primary: #FFD700;
-      --border: #333;
-      --shadow: 0 6px 24px rgba(255, 215, 0, 0.15);
-      --radius: 16px;
-      --font: 'Segoe UI', system-ui, sans-serif;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: sans-serif; }
     body {
-      font-family: var(--font);
-      background-color: var(--bg);
-      color: var(--text);
-      line-height: 1.6;
-      padding: 20px;
-    }
-    .container { max-width: 520px; margin: 0 auto; }
-
-    #login-screen, #app { padding: 30px; }
-    #login-screen {
-      background: var(--surface);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      border: 1px solid var(--border);
-    }
-    #login-screen h2 {
-      text-align: center;
-      margin-bottom: 25px;
-      color: var(--primary);
-    }
-    .input-group { margin-bottom: 20px; }
-    .input-group label { display: block; margin-bottom: 8px; color: var(--text-secondary); }
-    .input-group input {
-      width: 100%;
-      padding: 14px;
-      border-radius: 12px;
-      background: #1a1a1a;
-      border: 1px solid var(--border);
+      background: #000;
       color: white;
-    }
-    .btn {
-      width: 100%;
-      padding: 14px;
-      background: var(--primary);
-      color: #000;
-      border: none;
-      border-radius: 12px;
-      font-weight: 700;
-      cursor: pointer;
-      margin-top: 10px;
-    }
-    #app { display: none; }
-
-    header {
-      text-align: center;
-      margin-bottom: 25px;
-    }
-    header h1 {
-      font-size: 2.2rem;
-      color: var(--primary);
-    }
-
-    .balance-card {
-      background: var(--surface);
-      padding: 20px;
-      border-radius: var(--radius);
-      text-align: center;
-      margin-bottom: 25px;
-      box-shadow: var(--shadow);
-      border: 1px solid var(--border);
-    }
-    .balance { font-size: 2rem; font-weight: 800; margin: 10px 0; }
-
-    .action-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 14px;
-      margin-bottom: 25px;
-    }
-    .action-btn {
-      background: #1a1a1a;
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 18px 8px;
+      min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
-      cursor: pointer;
-      transition: all 0.2s;
-      text-align: center;
-      position: relative;
+      padding: 20px;
     }
-    .action-btn:hover { transform: translateY(-2px); background: #252525; }
-    .action-label { font-weight: 600; font-size: 0.9rem; margin-top: 6px; }
+    .container {
+      width: 100%;
+      max-width: 500px;
+    }
+    #login, #app { width: 100%; }
+    #app { display: none; }
 
-    .modal {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0,0,0,0.8);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 100;
-      display: none;
+    /* Tela de Login */
+    .card {
+      background: #111;
+      border: 1px solid #333;
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 20px;
     }
-    .modal-content {
-      background: var(--surface);
-      padding: 25px;
-      border-radius: var(--radius);
-      width: 90%;
-      max-width: 400px;
-      box-shadow: var(--shadow);
+    h1 {
+      text-align: center;
+      color: #FFD700;
+      margin-bottom: 24px;
+      font-size: 24px;
     }
-    .modal h3 { margin-bottom: 20px; color: var(--primary); }
-    .modal input, .modal button {
+    input {
       width: 100%;
       padding: 12px;
       margin: 8px 0;
-      border-radius: 10px;
-      border: 1px solid var(--border);
-      background: #1a1a1a;
+      border-radius: 8px;
+      border: 1px solid #444;
+      background: #222;
       color: white;
     }
-    .modal button.btn { margin-top: 15px; }
+    button {
+      width: 100%;
+      padding: 12px;
+      background: #FFD700;
+      color: #000;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 12px;
+    }
 
-    .loading-spinner {
+    /* App */
+    .balance {
+      text-align: center;
+      font-size: 28px;
+      margin: 20px 0;
+      color: #FFD700;
+      font-weight: bold;
+    }
+
+    /* Grid de Ações */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin: 20px 0;
+    }
+    .action {
+      background: #222;
+      border: 1px solid #444;
+      border-radius: 12px;
+      padding: 16px 0;
+      text-align: center;
+      cursor: pointer;
+      position: relative;
+    }
+    .action:hover {
+      background: #333;
+    }
+    .action p {
+      font-size: 12px;
+      margin-top: 6px;
+    }
+
+    /* Spinner de Palmeira */
+    .spinner {
       position: absolute;
       top: 0; left: 0;
       width: 100%; height: 100%;
-      background: rgba(0,0,0,0.7);
-      border-radius: 14px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 10;
+      background: rgba(0,0,0,0.8);
+      border-radius: 12px;
       display: none;
+      justify-content: center;
+      align-items: center;
     }
-    .spinner-palm {
-      width: 40px;
-      height: 40px;
+    .spinner svg {
+      width: 32px;
+      height: 32px;
       animation: spin 1.2s linear infinite;
     }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    .palm-svg { fill: var(--primary); stroke: none; }
-
-    .transaction-list {
-      background: var(--surface);
-      padding: 20px;
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      border: 1px solid var(--border);
+    @keyframes spin {
+      to { transform: rotate(360deg); }
     }
-    .transaction {
-      padding: 12px 0;
+
+    /* Histórico */
+    .history {
+      background: #111;
+      border: 1px solid #333;
+      border-radius: 16px;
+      padding: 16px;
+      margin-top: 20px;
+    }
+    .history h3 {
+      color: #FFD700;
+      margin-bottom: 12px;
+    }
+    .history div {
+      padding: 8px 0;
       border-bottom: 1px solid #333;
     }
-    .transaction:last-child { border: none; }
-    .credit { color: #4caf50; }
-    .debit { color: #f44336; }
+    .history div:last-child {
+      border: none;
+    }
 
-    .notification {
+    /* Notificação */
+    #toast {
       position: fixed;
       top: 20px;
       right: 20px;
-      background: var(--surface);
+      background: #222;
       color: white;
-      padding: 14px 20px;
-      border-radius: 12px;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.4);
-      border-left: 4px solid var(--primary);
-      z-index: 1000;
+      padding: 12px 20px;
+      border-left: 4px solid #FFD700;
+      border-radius: 8px;
       transform: translateX(200%);
-      transition: transform 0.3s ease-out;
+      transition: transform 0.3s;
     }
-    .notification.show { transform: translateX(0); }
+    #toast.show {
+      transform: translateX(0);
+    }
   </style>
 </head>
 <body>
-  <div class="container">
-    <!-- Login -->
-    <div id="login-screen">
-      <h2>🏦 PindoramaBank</h2>
-      <div class="input-group">
-        <label for="cpf">CPF (11 dígitos)</label>
-        <input type="text" id="cpf" placeholder="00011122233" maxlength="11" />
-      </div>
-      <div class="input-group">
-        <label for="password">Senha</label>
-        <input type="password" id="password" placeholder="••••••••" />
-      </div>
-      <button class="btn" onclick="login()">Entrar</button>
-    </div>
-
-    <!-- App -->
-    <div id="app">
-      <header>
-        <h1>PindoramaBank</h1>
-      </header>
-
-      <div class="balance-card">
-        <div>Saldo Disponível</div>
-        <div class="balance" id="balance">R$ 0,00</div>
-      </div>
-
-      <div class="action-grid">
-        <div class="action-btn" onclick="openModal('transfer')">
-          <div>📤</div>
-          <div class="action-label">Transferir</div>
-          <div class="loading-spinner" id="spinner-transfer">
-            <svg class="spinner-palm" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-              <path d="M50,80 L50,50 C50,45 45,40 40,40 C35,40 30,45 30,50 L30,80 Z" class="palm-svg"/>
-              <path d="M50,50 C60,40 70,30 80,20" class="palm-svg"/>
-              <path d="M50,50 C50,30 50,10 50,0" class="palm-svg"/>
-              <path d="M50,50 C40,40 30,30 20,20" class="palm-svg"/>
-            </svg>
-          </div>
-        </div>
-        <div class="action-btn" onclick="openModal('receive')">
-          <div>📥</div>
-          <div class="action-label">Receber</div>
-          <div class="loading-spinner" id="spinner-receive">
-            <svg class="spinner-palm" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-              <path d="M50,80 L50,50 C50,45 45,40 40,40 C35,40 30,45 30,50 L30,80 Z" class="palm-svg"/>
-              <path d="M50,50 C60,40 70,30 80,20" class="palm-svg"/>
-              <path d="M50,50 C50,30 50,10 50,0" class="palm-svg"/>
-              <path d="M50,50 C40,40 30,30 20,20" class="palm-svg"/>
-            </svg>
-          </div>
-        </div>
-        <div class="action-btn" onclick="openModal('invest')">
-          <div>📈</div>
-          <div class="action-label">Poupança</div>
-          <div class="loading-spinner" id="spinner-invest">
-            <svg class="spinner-palm" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-              <path d="M50,80 L50,50 C50,45 45,40 40,40 C35,40 30,45 30,50 L30,80 Z" class="palm-svg"/>
-              <path d="M50,50 C60,40 70,30 80,20" class="palm-svg"/>
-              <path d="M50,50 C50,30 50,10 50,0" class="palm-svg"/>
-              <path d="M50,50 C40,40 30,30 20,20" class="palm-svg"/>
-            </svg>
-          </div>
-        </div>
-        <div class="action-btn" onclick="openModal('loan')">
-          <div>💰</div>
-          <div class="action-label">Empréstimo</div>
-          <div class="loading-spinner" id="spinner-loan">
-            <svg class="spinner-palm" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-              <path d="M50,80 L50,50 C50,45 45,40 40,40 C35,40 30,45 30,50 L30,80 Z" class="palm-svg"/>
-              <path d="M50,50 C60,40 70,30 80,20" class="palm-svg"/>
-              <path d="M50,50 C50,30 50,10 50,0" class="palm-svg"/>
-              <path d="M50,50 C40,40 30,30 20,20" class="palm-svg"/>
-            </svg>
-          </div>
-        </div>
-        <div class="action-btn" onclick="showCard()">
-          <div>💳</div>
-          <div class="action-label">Cartão</div>
-          <div class="loading-spinner" id="spinner-card">
-            <svg class="spinner-palm" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-              <path d="M50,80 L50,50 C50,45 45,40 40,40 C35,40 30,45 30,50 L30,80 Z" class="palm-svg"/>
-              <path d="M50,50 C60,40 70,30 80,20" class="palm-svg"/>
-              <path d="M50,50 C50,30 50,10 50,0" class="palm-svg"/>
-              <path d="M50,50 C40,40 30,30 20,20" class="palm-svg"/>
-            </svg>
-          </div>
-        </div>
-        <div class="action-btn" onclick="showStatement()">
-          <div>📄</div>
-          <div class="action-label">Extrato</div>
-          <div class="loading-spinner" id="spinner-statement">
-            <svg class="spinner-palm" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-              <path d="M50,80 L50,50 C50,45 45,40 40,40 C35,40 30,45 30,50 L30,80 Z" class="palm-svg"/>
-              <path d="M50,50 C60,40 70,30 80,20" class="palm-svg"/>
-              <path d="M50,50 C50,30 50,10 50,0" class="palm-svg"/>
-              <path d="M50,50 C40,40 30,30 20,20" class="palm-svg"/>
-            </svg>
-          </div>
-        </div>
-      </div>
-
-      <div class="transaction-list">
-        <h3 style="margin-bottom:15px; color:var(--primary);">Últimas Transações</h3>
-        <div id="transactions">Nenhuma transação ainda</div>
-      </div>
-
-      <button class="btn" style="background:#252525; margin-top:20px;" onclick="logout()">Sair</button>
+  <!-- Login -->
+  <div id="login" class="container">
+    <div class="card">
+      <h1>🏦 PindoramaBank</h1>
+      <input type="text" id="cpf" placeholder="CPF (11 dígitos)" maxlength="11" />
+      <input type="password" id="pwd" placeholder="Senha" />
+      <button onclick="login()">Entrar</button>
     </div>
   </div>
 
-  <!-- Modais -->
-  <div class="modal" id="modal">
-    <div class="modal-content" id="modal-content"></div>
+  <!-- App -->
+  <div id="app" class="container">
+    <div class="card">
+      <div class="balance" id="balance">R$ 0,00</div>
+      
+      <div class="grid">
+        <div class="action" onclick="action('transfer')">
+          📤<p>Transferir</p>
+          <div class="spinner" id="spin-transfer">
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+              <path d="M50,80 L50,50 C50,45 45,40 40,40 C35,40 30,45 30,50 L30,80 Z" fill="#FFD700"/>
+              <path d="M50,50 C60,40 70,30 80,20" fill="#FFD700"/>
+              <path d="M50,50 C50,30 50,10 50,0" fill="#FFD700"/>
+              <path d="M50,50 C40,40 30,30 20,20" fill="#FFD700"/>
+            </svg>
+          </div>
+        </div>
+        <div class="action" onclick="action('receive')">
+          📥<p>Receber</p>
+          <div class="spinner" id="spin-receive">
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+              <path d="M50,80 L50,50 C50,45 45,40 40,40 C35,40 30,45 30,50 L30,80 Z" fill="#FFD700"/>
+              <path d="M50,50 C60,40 70,30 80,20" fill="#FFD700"/>
+              <path d="M50,50 C50,30 50,10 50,0" fill="#FFD700"/>
+              <path d="M50,50 C40,40 30,30 20,20" fill="#FFD700"/>
+            </svg>
+          </div>
+        </div>
+        <div class="action" onclick="action('poupanca')">
+          📈<p>Poupança</p>
+          <div class="spinner" id="spin-poupanca">
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+              <path d="M50,80 L50,50 C50,45 45,40 40,40 C35,40 30,45 30,50 L30,80 Z" fill="#FFD700"/>
+              <path d="M50,50 C60,40 70,30 80,20" fill="#FFD700"/>
+              <path d="M50,50 C50,30 50,10 50,0" fill="#FFD700"/>
+              <path d="M50,50 C40,40 30,30 20,20" fill="#FFD700"/>
+            </svg>
+          </div>
+        </div>
+        <div class="action" onclick="action('emprestimo')">
+          💰<p>Empréstimo</p>
+          <div class="spinner" id="spin-emprestimo">
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+              <path d="M50,80 L50,50 C50,45 45,40 40,40 C35,40 30,45 30,50 L30,80 Z" fill="#FFD700"/>
+              <path d="M50,50 C60,40 70,30 80,20" fill="#FFD700"/>
+              <path d="M50,50 C50,30 50,10 50,0" fill="#FFD700"/>
+              <path d="M50,50 C40,40 30,30 20,20" fill="#FFD700"/>
+            </svg>
+          </div>
+        </div>
+        <div class="action" onclick="action('cartao')">
+          💳<p>Cartão</p>
+          <div class="spinner" id="spin-cartao">
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+              <path d="M50,80 L50,50 C50,45 45,40 40,40 C35,40 30,45 30,50 L30,80 Z" fill="#FFD700"/>
+              <path d="M50,50 C60,40 70,30 80,20" fill="#FFD700"/>
+              <path d="M50,50 C50,30 50,10 50,0" fill="#FFD700"/>
+              <path d="M50,50 C40,40 30,30 20,20" fill="#FFD700"/>
+            </svg>
+          </div>
+        </div>
+        <div class="action" onclick="action('extrato')">
+          📄<p>Extrato</p>
+          <div class="spinner" id="spin-extrato">
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+              <path d="M50,80 L50,50 C50,45 45,40 40,40 C35,40 30,45 30,50 L30,80 Z" fill="#FFD700"/>
+              <path d="M50,50 C60,40 70,30 80,20" fill="#FFD700"/>
+              <path d="M50,50 C50,30 50,10 50,0" fill="#FFD700"/>
+              <path d="M50,50 C40,40 30,30 20,20" fill="#FFD700"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="history">
+      <h3>📝 Histórico</h3>
+      <div id="history">Nenhuma transação</div>
+    </div>
+
+    <button onclick="logout()" style="background:#333;">Sair</button>
   </div>
 
-  <div class="notification" id="notification"></div>
+  <div id="toast"></div>
 
   <script>
-    let currentUser = null;
-    const transactionsKey = 'pindorama_transactions';
+    let user = null;
+    let balance = 1500.00;
+    let history = [];
 
-    // === LOGIN ===
+    // Login simples
     function login() {
       const cpf = document.getElementById('cpf').value.replace(/\D/g, '');
-      const password = document.getElementById('password').value;
-      if (cpf.length !== 11 || password.length < 4) {
-        notify('CPF (11 dígitos) e senha (mín. 4 caracteres) obrigatórios.');
-        return;
+      const pwd = document.getElementById('pwd').value;
+      if (cpf.length === 11 && pwd.length >= 4) {
+        user = { cpf };
+        document.getElementById('login').style.display = 'none';
+        document.getElementById('app').style.display = 'block';
+        updateUI();
+        showToast('Bem-vindo ao PindoramaBank!');
+      } else {
+        showToast('CPF (11 dígitos) e senha (4+ chars) obrigatórios.');
       }
-      currentUser = { cpf, balance: 1850.90 };
-      localStorage.setItem('pindorama_user', JSON.stringify(currentUser));
-      showApp();
-      loadTransactions();
-      notify('Bem-vindo ao PindoramaBank!');
-    }
-
-    function showApp() {
-      document.getElementById('login-screen').style.display = 'none';
-      document.getElementById('app').style.display = 'block';
-      document.getElementById('balance').textContent = `R$ ${currentUser.balance.toFixed(2).replace('.', ',')}`;
     }
 
     function logout() {
-      currentUser = null;
-      localStorage.removeItem('pindorama_user');
-      localStorage.removeItem(transactionsKey);
+      user = null;
+      document.getElementById('login').style.display = 'block';
       document.getElementById('app').style.display = 'none';
-      document.getElementById('login-screen').style.display = 'block';
       document.getElementById('cpf').value = '';
-      document.getElementById('password').value = '';
+      document.getElementById('pwd').value = '';
+      history = [];
     }
 
-    // === MODAIS ===
-    function openModal(type) {
-      if (!currentUser) return;
-      let html = '';
-      if (type === 'transfer') {
-        html = `
-          <h3>📤 Transferir</h3>
-          <input type="text" id="transfer-cpf" placeholder="CPF do destinatário (11 dígitos)" maxlength="11" />
-          <input type="number" id="transfer-amount" placeholder="Valor (R$)" min="1" step="0.01" />
-          <button class="btn" onclick="performAction('transfer')">Confirmar</button>
-          <button class="btn" style="background:#252525;" onclick="closeModal()">Cancelar</button>
-        `;
-      } else if (type === 'receive') {
-        html = `
-          <h3>📥 Receber</h3>
-          <p>Use seu CPF para receber:</p>
-          <p style="font-size:1.2rem; font-weight:bold; color:var(--primary); margin:10px 0;">${formatCPF(currentUser.cpf)}</p>
-          <button class="btn" style="background:#252525;" onclick="closeModal()">Fechar</button>
-        `;
-      } else if (type === 'invest') {
-        html = `
-          <h3>📈 Aplicar na Poupança</h3>
-          <input type="number" id="invest-amount" placeholder="Valor (R$)" min="10" step="0.01" />
-          <button class="btn" onclick="performAction('invest')">Aplicar</button>
-          <button class="btn" style="background:#252525;" onclick="closeModal()">Cancelar</button>
-        `;
-      } else if (type === 'loan') {
-        html = `
-          <h3>💰 Solicitar Empréstimo</h3>
-          <input type="number" id="loan-amount" placeholder="Valor (R$)" min="100" max="2500" step="0.01" />
-          <p style="font-size:0.9rem; color:var(--text-secondary); margin:10px 0;">Até R$ 2.500 • 3,5% ao mês</p>
-          <button class="btn" onclick="performAction('loan')">Solicitar</button>
-          <button class="btn" style="background:#252525;" onclick="closeModal()">Cancelar</button>
-        `;
-      }
-      document.getElementById('modal-content').innerHTML = html;
-      document.getElementById('modal').style.display = 'flex';
+    function updateUI() {
+      document.getElementById('balance').textContent = `R$ ${balance.toFixed(2).replace('.', ',')}`;
+      updateHistory();
     }
 
-    function closeModal() {
-      document.getElementById('modal').style.display = 'none';
-    }
-
-    // === AÇÕES ===
-    function performAction(action) {
-      const spinnerId = `spinner-${action === 'invest' ? 'invest' : action === 'loan' ? 'loan' : 'transfer'}`;
-      const spinner = document.getElementById(spinnerId);
-      if (spinner) spinner.style.display = 'flex';
-
-      setTimeout(() => {
-        if (spinner) spinner.style.display = 'none';
-        closeModal();
-
-        if (action === 'transfer') {
-          const cpf = document.getElementById('transfer-cpf').value.replace(/\D/g, '');
-          const amount = parseFloat(document.getElementById('transfer-amount').value);
-          if (cpf.length !== 11 || isNaN(amount) || amount <= 0) {
-            notify('Dados inválidos.');
-            return;
-          }
-          if (amount > currentUser.balance) {
-            notify('Saldo insuficiente.');
-            return;
-          }
-          currentUser.balance -= amount;
-          saveUser();
-          addTransaction(-amount, `Transferência para ${formatCPF(cpf)}`);
-          notify('Transferência realizada!');
-        } 
-        else if (action === 'invest') {
-          const amount = parseFloat(document.getElementById('invest-amount').value);
-          if (isNaN(amount) || amount < 10) {
-            notify('Mínimo: R$ 10.');
-            return;
-          }
-          if (amount > currentUser.balance) {
-            notify('Saldo insuficiente.');
-            return;
-          }
-          currentUser.balance -= amount;
-          saveUser();
-          addTransaction(-amount, 'Aplicação na Poupança');
-          notify('Investimento realizado!');
-        } 
-        else if (action === 'loan') {
-          const amount = parseFloat(document.getElementById('loan-amount').value);
-          if (isNaN(amount) || amount < 100 || amount > 2500) {
-            notify('Valor entre R$ 100 e R$ 2.500.');
-            return;
-          }
-          currentUser.balance += amount;
-          saveUser();
-          addTransaction(amount, 'Empréstimo Pessoal');
-          notify('Empréstimo creditado!');
-        }
-      }, 2000);
-    }
-
-    function showCard() {
-      const spinner = document.getElementById('spinner-card');
-      spinner.style.display = 'flex';
-      setTimeout(() => {
-        spinner.style.display = 'none';
-        notify('Cartão: 5555 6666 7777 8888 • CVV: 123');
-      }, 1500);
-    }
-
-    function showStatement() {
-      const spinner = document.getElementById('spinner-statement');
-      spinner.style.display = 'flex';
-      setTimeout(() => {
-        spinner.style.display = 'none';
-        notify('Extrato completo no app mobile.');
-      }, 1000);
-    }
-
-    // === UTILITÁRIOS ===
-    function saveUser() {
-      localStorage.setItem('pindorama_user', JSON.stringify(currentUser));
-      document.getElementById('balance').textContent = `R$ ${currentUser.balance.toFixed(2).replace('.', ',')}`;
-    }
-
-    function addTransaction(amount, desc) {
-      const list = JSON.parse(localStorage.getItem(transactionsKey) || '[]');
-      list.unshift({ amount, desc, date: new Date().toLocaleString('pt-BR') });
-      localStorage.setItem(transactionsKey, JSON.stringify(list));
-      loadTransactions();
-    }
-
-    function loadTransactions() {
-      const list = JSON.parse(localStorage.getItem(transactionsKey) || '[]');
-      const container = document.getElementById('transactions');
-      if (list.length === 0) {
-        container.innerHTML = 'Nenhuma transação ainda';
+    function updateHistory() {
+      const el = document.getElementById('history');
+      if (history.length === 0) {
+        el.textContent = 'Nenhuma transação';
         return;
       }
-      container.innerHTML = list.slice(0, 5).map(t => `
-        <div class="transaction">
-          <div>${t.desc} <small>(${t.date})</small></div>
-          <div class="${t.amount >= 0 ? 'credit' : 'debit'}">
-            ${t.amount >= 0 ? '+' : ''} R$ ${Math.abs(t.amount).toFixed(2).replace('.', ',')}
-          </div>
-        </div>
-      `).join('');
+      el.innerHTML = history.slice(0, 5).map(item => 
+        `<div>${item.desc} <br><small>R$ ${Math.abs(item.amount).toFixed(2).replace('.', ',')}</small></div>`
+      ).join('');
     }
 
-    function formatCPF(cpf) {
-      return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.className = 'show';
+      setTimeout(() => t.className = '', 3000);
     }
 
-    function notify(message) {
-      const notif = document.getElementById('notification');
-      notif.textContent = message;
-      notif.className = 'notification show';
-      setTimeout(() => notif.classList.remove('show'), 3000);
-    }
+    // Ação principal
+    function action(type) {
+      if (!user) return;
 
-    // Iniciar
-    document.addEventListener('DOMContentLoaded', () => {
-      const saved = localStorage.getItem('pindorama_user');
-      if (saved) {
-        currentUser = JSON.parse(saved);
-        showApp();
-        loadTransactions();
-      }
-    });
+      // Mostrar spinner
+      const spinId = `spin-${type}`;
+      const spinner = document.getElementById(spinId);
+      if (spinner) spinner.style.display = 'flex';
+
+      // Simular ação
+      setTimeout(() => {
+        if (spinner) spinner.style.display = 'none';
+
+        if (type === 'transfer') {
+          if (balance >= 50) {
+            balance -= 50;
+            history.push({ desc: 'Transferência', amount: -50 });
+            showToast('Transferência de R$ 50,00 realizada!');
+          } else {
+            showToast('Saldo insuficiente.');
+          }
+        } 
+        else if (type === 'receive') {
+          balance += 100;
+          history.push({ desc: 'Recebimento', amount: 100 });
+          showToast('Recebido R$ 100,00!');
+        } 
+        else if (type === 'poupanca') {
+          if (balance >= 200) {
+            balance -= 200;
+            history.push({ desc: 'Aplicação Poupança', amount: -200 });
+            showToast('R$ 200,00 aplicados na poupança!');
+          } else {
+            showToast('Mínimo: R$ 200,00');
+          }
+        } 
+        else if (type === 'emprestimo') {
+          balance += 500;
+          history.push({ desc: 'Empréstimo', amount: 500 });
+          showToast('Empréstimo de R$ 500,00 liberado!');
+        } 
+        else if (type === 'cartao') {
+          showToast('Cartão: 5555 6666 7777 8888 • CVV: 123');
+        } 
+        else if (type === 'extrato') {
+          showToast('Extrato atualizado acima.');
+        }
+
+        updateUI();
+      }, 1800);
+    }
   </script>
 </body>
 </html>
