@@ -180,6 +180,57 @@
       font-size: 0.95rem;
     }
 
+    /* Modal */
+    .modal {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.9);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      display: none;
+    }
+    .modal-content {
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 30px;
+      width: 90%;
+      max-width: 480px;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+    }
+    .modal h3 {
+      color: var(--primary);
+      margin-bottom: 20px;
+      font-size: 1.5rem;
+    }
+    .modal input {
+      width: 100%;
+      padding: 15px;
+      border-radius: 12px;
+      background: #1a1a1a;
+      border: 1px solid var(--border);
+      color: white;
+      font-size: 1.1rem;
+      margin: 12px 0;
+    }
+    .modal-buttons {
+      display: flex;
+      gap: 12px;
+      margin-top: 20px;
+    }
+    .modal-buttons button {
+      flex: 1;
+      padding: 14px;
+      font-size: 1rem;
+    }
+    .cancel-btn {
+      background: #252525 !important;
+      color: var(--text) !important;
+    }
+
     /* Spinner de Palmeira */
     .loading-spinner {
       position: absolute;
@@ -260,7 +311,6 @@
       transform: translateX(0);
     }
 
-    /* Sair */
     .logout-btn {
       background: #1e1e1e !important;
       color: var(--text) !important;
@@ -298,7 +348,7 @@
       </div>
 
       <div class="action-grid">
-        <div class="action-btn" onclick="triggerAction('transfer')">
+        <div class="action-btn" onclick="openModal('transfer')">
           <div class="action-icon">📤</div>
           <div class="action-label">Transferir</div>
           <div class="loading-spinner" id="spinner-transfer">
@@ -310,7 +360,7 @@
             </svg>
           </div>
         </div>
-        <div class="action-btn" onclick="triggerAction('receive')">
+        <div class="action-btn" onclick="openModal('receive')">
           <div class="action-icon">📥</div>
           <div class="action-label">Receber</div>
           <div class="loading-spinner" id="spinner-receive">
@@ -322,7 +372,7 @@
             </svg>
           </div>
         </div>
-        <div class="action-btn" onclick="triggerAction('invest')">
+        <div class="action-btn" onclick="openModal('invest')">
           <div class="action-icon">📈</div>
           <div class="action-label">Investir</div>
           <div class="loading-spinner" id="spinner-invest">
@@ -334,7 +384,7 @@
             </svg>
           </div>
         </div>
-        <div class="action-btn" onclick="triggerAction('loan')">
+        <div class="action-btn" onclick="openModal('loan')">
           <div class="action-icon">💰</div>
           <div class="action-label">Crédito</div>
           <div class="loading-spinner" id="spinner-loan">
@@ -346,7 +396,7 @@
             </svg>
           </div>
         </div>
-        <div class="action-btn" onclick="triggerAction('card')">
+        <div class="action-btn" onclick="showCard()">
           <div class="action-icon">💳</div>
           <div class="action-label">Cartão</div>
           <div class="loading-spinner" id="spinner-card">
@@ -358,7 +408,7 @@
             </svg>
           </div>
         </div>
-        <div class="action-btn" onclick="triggerAction('statement')">
+        <div class="action-btn" onclick="showStatement()">
           <div class="action-icon">📄</div>
           <div class="action-label">Extrato</div>
           <div class="loading-spinner" id="spinner-statement">
@@ -379,6 +429,11 @@
 
       <button class="btn logout-btn" onclick="logout()">Sair da Conta</button>
     </div>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal" id="modal">
+    <div class="modal-content" id="modal-content"></div>
   </div>
 
   <div class="notification" id="notification"></div>
@@ -403,6 +458,7 @@
       const pwd = document.getElementById('password').value;
       if (cpf && pwd.length >= 4) {
         currentUser = { cpf };
+        localStorage.setItem('pb_user', JSON.stringify(currentUser));
         document.getElementById('login-screen').style.display = 'none';
         document.getElementById('app').style.display = 'block';
         updateUI();
@@ -414,6 +470,7 @@
 
     function logout() {
       currentUser = null;
+      localStorage.removeItem('pb_user');
       document.getElementById('login-screen').style.display = 'block';
       document.getElementById('app').style.display = 'none';
       document.getElementById('cpf').value = '';
@@ -448,58 +505,125 @@
       setTimeout(() => el.classList.remove('show'), 3500);
     }
 
-    // Ações realistas
-    function triggerAction(action) {
+    // === MODAIS COM INTERAÇÃO REAL ===
+    function openModal(type) {
       if (!currentUser) return;
 
+      let title, prompt, placeholder, action;
+      if (type === 'transfer') {
+        title = 'Transferência Bancária';
+        prompt = 'Valor a transferir (R$)';
+        placeholder = 'Ex: 50000000.00';
+        action = 'transfer';
+      } else if (type === 'receive') {
+        title = 'Recebimento de Valores';
+        prompt = 'Valor a receber (R$)';
+        placeholder = 'Ex: 100000000.00';
+        action = 'receive';
+      } else if (type === 'invest') {
+        title = 'Aplicação em Investimentos';
+        prompt = 'Valor a investir (R$)';
+        placeholder = 'Ex: 500000000.00';
+        action = 'invest';
+      } else if (type === 'loan') {
+        title = 'Solicitação de Crédito';
+        prompt = 'Valor do crédito (R$)';
+        placeholder = 'Ex: 1000000000.00';
+        action = 'loan';
+      }
+
+      document.getElementById('modal-content').innerHTML = `
+        <h3>${title}</h3>
+        <div class="input-group">
+          <label for="modal-amount">${prompt}</label>
+          <input type="number" id="modal-amount" placeholder="${placeholder}" step="0.01" min="0.01" />
+        </div>
+        <div class="modal-buttons">
+          <button class="btn" onclick="confirmAction('${action}')">Confirmar</button>
+          <button class="btn cancel-btn" onclick="closeModal()">Cancelar</button>
+        </div>
+      `;
+      document.getElementById('modal').style.display = 'flex';
+
+      // Focar no campo
+      setTimeout(() => {
+        document.getElementById('modal-amount').focus();
+      }, 100);
+    }
+
+    function closeModal() {
+      document.getElementById('modal').style.display = 'none';
+    }
+
+    function confirmAction(action) {
+      const amountStr = document.getElementById('modal-amount').value;
+      const amount = parseFloat(amountStr);
+
+      if (isNaN(amount) || amount <= 0) {
+        notify('Por favor, insira um valor válido.');
+        return;
+      }
+
+      // Mostrar spinner
       const spinner = document.getElementById(`spinner-${action}`);
       if (spinner) spinner.style.display = 'flex';
+      closeModal();
 
+      // Processar ação
       setTimeout(() => {
         if (spinner) spinner.style.display = 'none';
 
         if (action === 'transfer') {
-          const amount = 150000000.00; // R$ 150 milhões
           if (balance >= amount) {
             balance -= amount;
-            transactions.unshift({ desc: 'Transferência Internacional', amount: -amount });
+            transactions.unshift({ desc: 'Transferência Efetuada', amount: -amount });
             notify(`Transferência de ${formatBRL(amount)} concluída.`);
           } else {
-            notify('Saldo insuficiente para operação.');
+            notify('Saldo insuficiente para esta operação.');
           }
         } 
         else if (action === 'receive') {
-          const amount = 850000000.00; // R$ 850 milhões
           balance += amount;
-          transactions.unshift({ desc: 'Recebimento Dividendos', amount: amount });
-          notify(`Recebido ${formatBRL(amount)} em dividendos.`);
+          transactions.unshift({ desc: 'Recebimento Efetuado', amount: amount });
+          notify(`Recebido ${formatBRL(amount)}.`);
         } 
         else if (action === 'invest') {
-          const amount = 1200000000.00; // R$ 1,2 bilhão
           if (balance >= amount) {
             balance -= amount;
-            transactions.unshift({ desc: 'Aplicação em Fundo Imobiliário', amount: -amount });
-            notify(`Investimento de ${formatBRL(amount)} realizado.`);
+            transactions.unshift({ desc: 'Investimento Realizado', amount: -amount });
+            notify(`Investimento de ${formatBRL(amount)} confirmado.`);
           } else {
             notify('Saldo insuficiente para aplicação.');
           }
         } 
         else if (action === 'loan') {
-          const amount = 3500000000.00; // R$ 3,5 bilhões
           balance += amount;
-          transactions.unshift({ desc: 'Linhas de Crédito Premium', amount: amount });
-          notify(`Crédito de ${formatBRL(amount)} liberado.`);
-        } 
-        else if (action === 'card') {
-          notify('Cartão Infinite: 5555 6666 7777 8888 • Limite: R$ 1.000.000');
-        } 
-        else if (action === 'statement') {
-          notify('Extrato detalhado enviado por e-mail.');
+          transactions.unshift({ desc: 'Crédito Liberado', amount: amount });
+          notify(`Crédito de ${formatBRL(amount)} adicionado à conta.`);
         }
 
         localStorage.setItem('pb_transactions', JSON.stringify(transactions));
         updateUI();
       }, 2000);
+    }
+
+    // Cartão e Extrato (sem modal)
+    function showCard() {
+      const spinner = document.getElementById('spinner-card');
+      spinner.style.display = 'flex';
+      setTimeout(() => {
+        spinner.style.display = 'none';
+        notify('Cartão Infinite: 5555 6666 7777 8888 • Limite: Ilimitado');
+      }, 1500);
+    }
+
+    function showStatement() {
+      const spinner = document.getElementById('spinner-statement');
+      spinner.style.display = 'flex';
+      setTimeout(() => {
+        spinner.style.display = 'none';
+        notify('Extrato detalhado enviado para seu e-mail institucional.');
+      }, 1000);
     }
 
     // Inicializa
@@ -510,6 +634,13 @@
         document.getElementById('login-screen').style.display = 'none';
         document.getElementById('app').style.display = 'block';
         updateUI();
+      }
+    });
+
+    // Fechar modal com ESC
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeModal();
       }
     });
   </script>
