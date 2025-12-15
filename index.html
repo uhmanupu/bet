@@ -208,13 +208,65 @@
     .credit { color: var(--success); }
     .debit { color: var(--danger); }
 
+    /* Gráfico */
+    .chart-container {
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 24px;
+      margin-bottom: 24px;
+      border: 1px solid var(--border);
+    }
+    #patrimonyChart {
+      width: 100% !important;
+      height: 250px !important;
+    }
+
+    /* Exportação */
+    .export-section {
+      text-align: center;
+      margin-top: 20px;
+    }
+
     .logout-btn {
       background: #1e1e1e;
       color: white;
       border: 1px solid var(--border);
     }
 
-    /* Notificação */
+    /* Notificação Push */
+    .push-notification {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      background: #1e1e1e;
+      color: white;
+      padding: 16px 20px;
+      border-radius: 14px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.5);
+      border-left: 4px solid var(--primary);
+      z-index: 2000;
+      transform: translateX(-200%);
+      transition: transform 0.3s;
+      max-width: 320px;
+    }
+    .push-notification.show {
+      transform: translateX(0);
+    }
+    .push-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+    .push-title { font-weight: 700; color: var(--primary); }
+    .push-close {
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    /* Toast simples */
     #toast {
       position: fixed;
       top: 20px;
@@ -260,6 +312,11 @@
         <div class="account-info">Saldo Consolidado</div>
       </div>
 
+      <!-- Gráfico de Patrimônio -->
+      <div class="chart-container">
+        <canvas id="patrimonyChart"></canvas>
+      </div>
+
       <div class="action-grid">
         <div class="action-btn" onclick="navigateTo('transfer')">
           <div class="action-icon">📤</div>
@@ -282,7 +339,7 @@
           <div class="action-label">Cartão</div>
         </div>
         <div class="action-btn" onclick="navigateTo('history')">
-          <div class="action-icon">📄</div>
+          <div class="action-icon">📊</div>
           <div class="action-label">Extrato</div>
         </div>
       </div>
@@ -388,12 +445,15 @@
     <!-- Tela: Histórico -->
     <div id="screen-history" class="screen">
       <div class="screen-header">
-        <h2 class="screen-title">📄 Extrato</h2>
+        <h2 class="screen-title">📊 Extrato Completo</h2>
         <button class="back-btn" onclick="navigateTo('home')">←</button>
       </div>
       <div class="history-card">
         <h3 class="history-title">Últimas Movimentações</h3>
         <div id="transactions-list">Nenhuma transação</div>
+      </div>
+      <div class="export-section">
+        <button class="btn" onclick="exportToCSV()">📥 Exportar Extrato (CSV)</button>
       </div>
     </div>
   </div>
@@ -408,13 +468,24 @@
     </svg>
   </div>
 
-  <!-- Notificação -->
+  <!-- Notificações -->
   <div id="toast"></div>
+  <div class="push-notification" id="push">
+    <div class="push-header">
+      <div class="push-title">PindoramaBank</div>
+      <button class="push-close" onclick="closePush()">✕</button>
+    </div>
+    <div id="push-message"></div>
+  </div>
+
+  <!-- Chart.js embutido -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 
   <script>
     let user = null;
     let balance = 5326753357.99; // R$ 5.326.753.357,99
     let transactions = JSON.parse(localStorage.getItem('pb_trans')) || [];
+    let chart = null;
 
     // Formatação
     function formatBRL(val) {
@@ -432,9 +503,10 @@
       if (cpf && pwd.length >= 4) {
         user = { cpf };
         localStorage.setItem('pb_user', JSON.stringify(user));
-        showScreen('home');
-        updateUI();
+        navigateTo('home');
         showToast('Bem-vindo ao PindoramaBank Private.');
+        // Mostrar notificação push de boas-vindas
+        showPushNotification('Sua conta Premium foi acessada com sucesso.');
       } else {
         showToast('CPF e senha válidos são obrigatórios.');
       }
@@ -446,25 +518,28 @@
       localStorage.removeItem('pb_trans');
       transactions = [];
       balance = 5326753357.99;
-      showScreen('login');
+      navigateTo('login');
     }
 
     // Navegação
-    function showScreen(screenId) {
+    function navigateTo(screenId) {
+      if (!user && screenId !== 'login') return;
       document.querySelectorAll('.screen, #screen-login').forEach(el => el.style.display = 'none');
       if (screenId === 'login') {
         document.getElementById('screen-login').style.display = 'block';
       } else {
         document.getElementById(`screen-${screenId}`).style.display = 'block';
-        if (screenId === 'home') updateUI();
-        if (screenId === 'receive') document.getElementById('user-cpf').textContent = formatCPF(user.cpf);
-        if (screenId === 'history') renderHistory();
+        if (screenId === 'home') {
+          updateUI();
+          renderChart();
+        }
+        if (screenId === 'receive') {
+          document.getElementById('user-cpf').textContent = formatCPF(user.cpf);
+        }
+        if (screenId === 'history') {
+          renderHistory();
+        }
       }
-    }
-
-    function navigateTo(screenId) {
-      if (!user && screenId !== 'login') return;
-      showScreen(screenId);
     }
 
     function formatCPF(cpf) {
@@ -492,8 +567,115 @@
       `).join('');
     }
 
-    // Ações
-    function performTransfer() {
+    // === GRÁFICO ===
+    function renderChart() {
+      const ctx = document.getElementById('patrimonyChart').getContext('2d');
+      
+      // Gerar dados simulados (últimos 7 dias)
+      const labels = [];
+      const data = [];
+      let current = balance;
+      
+      for (let i = 6; i >= 0; i--) {
+        const date = new Date();
+        date.setDate(date.getDate() - i);
+        labels.push(date.toLocaleDateString('pt-BR'));
+        
+        // Simular variação
+        if (i === 0) {
+          data.push(current);
+        } else {
+          const change = (Math.random() - 0.5) * 100000000; // ±100 milhões
+          current -= change;
+          data.push(current);
+        }
+      }
+
+      if (chart) chart.destroy();
+      chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Patrimônio Consolidado',
+            data: data,
+            borderColor: '#FFD700',
+            backgroundColor: 'rgba(255, 215, 0, 0.1)',
+            borderWidth: 3,
+            pointRadius: 4,
+            pointBackgroundColor: '#000',
+            tension: 0.4
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label: (context) => formatBRL(context.parsed.y)
+              }
+            }
+          },
+          scales: {
+            y: {
+              ticks: {
+                callback: (val) => formatBRL(val).replace(/R\$\s?/, '').split(',')[0] + 'B',
+                color: '#aaa'
+              },
+              grid: { color: 'rgba(255,255,255,0.05)' }
+            },
+            x: {
+              ticks: { color: '#aaa' },
+              grid: { display: false }
+            }
+          }
+        }
+      });
+    }
+
+    // === EXPORTAÇÃO CSV ===
+    function exportToCSV() {
+      if (transactions.length === 0) {
+        showToast('Nenhuma transação para exportar.');
+        return;
+      }
+
+      let csv = 'Data,Descrição,Valor\n';
+      transactions.forEach(t => {
+        csv += `"${t.date}","${t.desc}","${t.amount}"\n`;
+      });
+
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `extrato_pindoramabank_${new Date().toISOString().slice(0,10)}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+
+      showToast('Extrato exportado com sucesso!');
+    }
+
+    // === NOTIFICAÇÕES PUSH ===
+    function showPushNotification(message) {
+      const el = document.getElementById('push');
+      document.getElementById('push-message').textContent = message;
+      el.className = 'push-notification show';
+      setTimeout(() => {
+        el.classList.remove('show');
+      }, 6000);
+    }
+
+    function closePush() {
+      document.getElementById('push').classList.remove('show');
+    }
+
+    // Ações (mantidas do anterior)
+    function performTransfer() { /* ... mesmo código ... */ 
       const cpf = document.getElementById('t-cpf').value.trim();
       const amount = parseFloat(document.getElementById('t-amount').value);
       if (!cpf || cpf.replace(/\D/g, '').length !== 11) {
@@ -519,6 +701,7 @@
         });
         saveData();
         showToast(`Transferência de ${formatBRL(amount)} concluída.`);
+        showPushNotification(`Transferência de ${formatBRL(amount)} realizada.`);
         navigateTo('home');
       }, 2000);
     }
@@ -540,6 +723,7 @@
         });
         saveData();
         showToast(`Recebido ${formatBRL(amount)}.`);
+        showPushNotification(`Recebido ${formatBRL(amount)}.`);
         navigateTo('home');
       }, 2000);
     }
@@ -565,6 +749,7 @@
         });
         saveData();
         showToast(`Investimento de ${formatBRL(amount)} realizado.`);
+        showPushNotification(`Investimento de ${formatBRL(amount)} confirmado.`);
         navigateTo('home');
       }, 2000);
     }
@@ -586,12 +771,14 @@
         });
         saveData();
         showToast(`Crédito de ${formatBRL(amount)} liberado.`);
+        showPushNotification(`Crédito de ${formatBRL(amount)} disponível.`);
         navigateTo('home');
       }, 2000);
     }
 
     function showCardToast() {
       showToast('Número do cartão copiado para área de transferência.');
+      showPushNotification('Cartão Infinite acessado.');
     }
 
     // Utilitários
@@ -620,8 +807,7 @@
       const saved = localStorage.getItem('pb_user');
       if (saved) {
         user = JSON.parse(saved);
-        showScreen('home');
-        updateUI();
+        navigateTo('home');
       }
     });
   </script>
