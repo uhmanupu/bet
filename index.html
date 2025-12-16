@@ -1,18 +1,10 @@
 <!DOCTYPE html>
-<html lang="pt" data-theme="dark">
+<html lang="pt">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Pindorama+</title>
   <style>
-    :root[data-theme="dark"] {
-      --bg: #000;
-      --text: #fff;
-      --accent: #FFD700; /* amarelo */
-      --card-bg: #1a1a1a;
-      --overlay: rgba(0,0,0,0.85);
-    }
-
     * {
       margin: 0;
       padding: 0;
@@ -20,8 +12,16 @@
       font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
     }
 
+    :root {
+      --primary-bg: linear-gradient(135deg, #0d1b2a 0%, #1e3a5f 50%, #0d1b2a 100%);
+      --text: #ffffff;
+      --accent: #FFD700; /* amarelo ouro */
+      --card-bg: rgba(13, 27, 42, 0.7);
+      --overlay: rgba(13, 27, 42, 0.9);
+    }
+
     body {
-      background-color: var(--bg);
+      background: var(--primary-bg);
       color: var(--text);
       overflow-x: hidden;
     }
@@ -38,8 +38,8 @@
     }
     .loader {
       width: 60px; height: 60px;
-      border: 8px solid rgba(0,0,0,0.1);
-      border-top: 8px solid #000;
+      border: 8px solid rgba(13, 27, 42, 0.2);
+      border-top: 8px solid #0d1b2a;
       border-radius: 50%;
       animation: spin 1s linear infinite;
     }
@@ -54,34 +54,35 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background: linear-gradient(to bottom, rgba(0,0,0,0.9), transparent);
+      background: rgba(13, 27, 42, 0.85);
+      backdrop-filter: blur(8px);
       z-index: 1000;
     }
     .logo {
       font-size: 2rem;
       font-weight: bold;
       color: var(--accent);
+      text-shadow: 0 0 8px rgba(255, 215, 0, 0.4);
     }
-    .header-actions { display: flex; align-items: center; gap: 1rem; }
-    .lang-btn, .pindorama-plus-btn {
+    .lang-btn {
       background: transparent;
       border: 1px solid var(--accent);
       color: var(--accent);
       padding: 0.4rem 0.8rem;
       font-weight: bold;
       border-radius: 4px;
-      text-decoration: none;
       cursor: pointer;
+      transition: all 0.3s;
     }
-    .lang-btn:hover, .pindorama-plus-btn:hover {
+    .lang-btn:hover {
       background: var(--accent);
-      color: var(--bg);
+      color: #0d1b2a;
     }
 
     /* Hero */
     .hero {
       height: 80vh;
-      background: linear-gradient(to right, rgba(0,0,0,0.9), transparent),
+      background: linear-gradient(to right, rgba(13,27,42,0.85), transparent),
                   url('https://images.pexels.com/photos/3393977/pexels-photo-3393977.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1') center/cover no-repeat;
       display: flex;
       align-items: flex-end;
@@ -96,27 +97,27 @@
       font-size: 3.5rem;
       margin-bottom: 1rem;
       color: var(--accent);
+      text-shadow: 0 2px 6px rgba(0,0,0,0.6);
     }
     .hero p {
       font-size: 1.2rem;
       margin-bottom: 1.5rem;
-      opacity: 0.9;
-    }
-    .hero-buttons {
-      display: flex;
-      gap: 1rem;
+      opacity: 0.95;
     }
     .btn-watch {
       background: var(--accent);
-      color: #000;
+      color: #0d1b2a;
       border: none;
       padding: 0.7rem 2rem;
       font-size: 1.1rem;
       font-weight: bold;
       border-radius: 4px;
       cursor: pointer;
+      transition: background 0.2s;
     }
-    .btn-watch:hover { background: #e6c200; }
+    .btn-watch:hover {
+      background: #e6c200;
+    }
 
     /* Carrossel */
     .category {
@@ -139,13 +140,17 @@
     .item {
       min-width: 220px;
       height: 124px;
-      border-radius: 6px;
+      border-radius: 8px;
       background-size: cover;
       background-position: center;
       cursor: pointer;
-      transition: transform 0.2s;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.4);
     }
-    .item:hover { transform: scale(1.05); }
+    .item:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 14px rgba(255,215,0,0.3);
+    }
 
     /* Modal de Vídeo */
     #video-modal {
@@ -160,10 +165,11 @@
     .modal-content {
       width: 90%;
       max-width: 900px;
-      background: #000;
-      border-radius: 8px;
+      background: #0d1b2a;
+      border-radius: 12px;
       overflow: hidden;
       position: relative;
+      border: 2px solid var(--accent);
     }
     .modal-content iframe {
       width: 100%;
@@ -171,18 +177,20 @@
     }
     .close-modal {
       position: absolute;
-      top: 10px;
-      right: 15px;
-      color: white;
+      top: 12px;
+      right: 18px;
+      color: var(--accent);
       font-size: 1.8rem;
       cursor: pointer;
+      font-weight: bold;
     }
 
     footer {
       text-align: center;
       padding: 2rem;
-      color: #666;
+      color: rgba(255,255,255,0.6);
       font-size: 0.9rem;
+      background: rgba(13, 27, 42, 0.9);
     }
   </style>
 </head>
@@ -191,48 +199,35 @@
 
   <header>
     <div class="logo">Pindorama+</div>
-    <div class="header-actions">
-      <button id="lang-toggle" class="lang-btn">PT / EN</button>
-      <a href="https://uhmanupu.github.io/bet/" target="_blank" class="pindorama-plus-btn">P+</a>
-    </div>
+    <button id="lang-toggle" class="lang-btn">PT / EN</button>
   </header>
 
   <div class="hero">
     <div class="hero-content">
       <h1 id="hero-title">A Lenda de Pindorama</h1>
       <p id="hero-desc">Um épico original sobre os guardiões da floresta ancestral. Disponível agora no Pindorama+.</p>
-      <div class="hero-buttons">
-        <button class="btn-watch" id="btn-watch">Assistir</button>
-      </div>
+      <button class="btn-watch" id="btn-watch">Assistir</button>
     </div>
   </div>
 
   <div class="category">
     <h2 id="cat-movies">Filmes</h2>
-    <div class="carousel" id="movies">
-      <!-- Itens serão inseridos por JS -->
-    </div>
+    <div class="carousel" id="movies"></div>
   </div>
 
   <div class="category">
     <h2 id="cat-series">Séries</h2>
-    <div class="carousel" id="series">
-      <!-- Itens serão inseridos por JS -->
-    </div>
+    <div class="carousel" id="series"></div>
   </div>
 
   <div class="category">
     <h2 id="cat-originals">Originais Pindorama+</h2>
-    <div class="carousel" id="originals">
-      <!-- Itens serão inseridos por JS -->
-    </div>
+    <div class="carousel" id="originals"></div>
   </div>
 
   <div class="category">
     <h2 id="cat-new">Lançamentos</h2>
-    <div class="carousel" id="new">
-      <!-- Itens serão inseridos por JS -->
-    </div>
+    <div class="carousel" id="new"></div>
   </div>
 
   <!-- Modal -->
@@ -246,7 +241,6 @@
   <footer>&copy; 2025 Pindorama+. Todos os direitos reservados.</footer>
 
   <script>
-    // Dados de exemplo com imagens reais (Pexels) e vídeos do YouTube
     const translations = {
       en: {
         heroTitle: "The Legend of Pindorama",
@@ -340,7 +334,6 @@
       applyTranslations();
     });
 
-    // Inicializa
     window.addEventListener('load', () => {
       setTimeout(() => {
         document.getElementById('splash').style.display = 'none';
