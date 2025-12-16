@@ -9,8 +9,9 @@
       --bg-primary: #000;
       --bg-secondary: #111;
       --text-primary: #fff;
-      --accent: #FFD700; /* amarelo ouro */
+      --accent: #FFD700;
       --card-bg: #1a1a1a;
+      --overlay: rgba(0,0,0,0.85);
     }
 
     * {
@@ -23,16 +24,17 @@
     body {
       background-color: var(--bg-primary);
       color: var(--text-primary);
-      overflow-x: hidden;
+      line-height: 1.6;
     }
 
     .container {
       width: 90%;
       max-width: 1200px;
       margin: 0 auto;
+      padding: 0 1rem;
     }
 
-    /* Splash amarelo */
+    /* Splash */
     #splash {
       position: fixed;
       top: 0;
@@ -62,7 +64,12 @@
 
     /* Header */
     header {
-      padding: 1.2rem 0;
+      padding: 1rem 0;
+      position: sticky;
+      top: 0;
+      background: var(--bg-primary);
+      z-index: 100;
+      border-bottom: 1px solid #333;
     }
 
     .header-content {
@@ -74,6 +81,18 @@
     .logo {
       font-size: 1.8rem;
       font-weight: bold;
+      color: var(--accent);
+    }
+
+    nav a {
+      color: var(--text-primary);
+      text-decoration: none;
+      margin-left: 1.5rem;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    nav a:hover {
       color: var(--accent);
     }
 
@@ -95,68 +114,138 @@
       color: var(--bg-primary);
     }
 
-    /* Hero */
-    .hero {
-      height: 70vh;
-      background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.9)), url('https://via.placeholder.com/1920x1080/000000/FFD700?text=Pindorama+Park') center/cover no-repeat;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
+    /* Main Pages */
+    main {
+      min-height: 80vh;
+      padding: 2rem 0;
     }
 
-    .hero h1 {
-      font-size: 3rem;
+    .page {
+      display: none;
+    }
+
+    .page.active {
+      display: block;
+      animation: fadeIn 0.5s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    h1, h2, h3 {
       margin-bottom: 1rem;
       color: var(--accent);
     }
 
-    .hero p {
-      font-size: 1.2rem;
-      margin-bottom: 2rem;
-      max-width: 700px;
-      margin-left: auto;
-      margin-right: auto;
+    p {
+      margin-bottom: 1rem;
     }
 
-    .cta-button {
-      background-color: var(--accent);
-      color: #000;
-      border: none;
-      padding: 0.8rem 2rem;
-      font-size: 1.1rem;
-      font-weight: bold;
-      border-radius: 30px;
-      cursor: pointer;
-      transition: transform 0.2s;
-    }
-
-    .cta-button:hover {
-      transform: scale(1.05);
-    }
-
-    /* Grid */
-    .content-grid {
+    /* Trailers */
+    .trailers-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
       gap: 1.5rem;
-      padding: 3rem 0 4rem;
+      margin-top: 2rem;
     }
 
-    .card {
+    .trailer-card {
       background: var(--card-bg);
-      padding: 2rem;
-      border-radius: 12px;
-      text-align: center;
+      border-radius: 10px;
+      overflow: hidden;
+      cursor: pointer;
       transition: transform 0.3s;
     }
 
-    .card:hover {
-      transform: translateY(-8px);
+    .trailer-card:hover {
+      transform: scale(1.03);
     }
 
-    .card h3 {
+    .thumbnail {
+      width: 100%;
+      height: 160px;
+      background-color: #333;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       color: var(--accent);
+      font-weight: bold;
+    }
+
+    .trailer-card h3 {
+      padding: 1rem;
+      font-size: 1.1rem;
+    }
+
+    /* Modal de vídeo */
+    #video-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--overlay);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 2000;
+    }
+
+    .modal-content {
+      width: 90%;
+      max-width: 800px;
+      background: #000;
+      border-radius: 10px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .modal-content iframe {
+      width: 100%;
+      height: 450px;
+    }
+
+    .close-modal {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      color: white;
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+
+    /* Tickets */
+    .ticket-options {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+
+    .ticket-card {
+      background: var(--card-bg);
+      padding: 1.5rem;
+      border-radius: 12px;
+      text-align: center;
+    }
+
+    .ticket-price {
+      font-size: 1.8rem;
+      color: var(--accent);
+      margin: 0.5rem 0;
+    }
+
+    .pix-btn {
+      margin-top: 1rem;
+      background: var(--accent);
+      color: #000;
+      border: none;
+      padding: 0.6rem 1.5rem;
+      font-weight: bold;
+      border-radius: 6px;
+      cursor: pointer;
     }
 
     /* Footer */
@@ -170,34 +259,106 @@
   </style>
 </head>
 <body>
-  <div id="splash">
-    <div class="loader"></div>
-  </div>
+  <!-- Splash -->
+  <div id="splash"><div class="loader"></div></div>
 
+  <!-- Header -->
   <header>
     <div class="container header-content">
       <div class="logo">Pindorama+</div>
-      <div>
+      <div style="display:flex;align-items:center;">
+        <nav>
+          <a href="#" data-page="home">Home</a>
+          <a href="#" data-page="attractions">Atrações</a>
+          <a href="#" data-page="events">Eventos</a>
+          <a href="#" data-page="tickets">Ingressos</a>
+        </nav>
         <button id="lang-toggle" class="lang-btn">PT / EN</button>
         <a href="https://uhmanupu.github.io/bet/" target="_blank" class="pindorama-plus-btn">P+</a>
       </div>
     </div>
   </header>
 
-  <section class="hero">
-    <div>
-      <h1 id="welcome">Bem-vindo ao Pindorama+</h1>
-      <p id="tagline">Entre no universo do Pindorama Park de onde estiver.</p>
-      <button class="cta-button" id="explore">Explorar Agora</button>
-    </div>
-  </section>
+  <!-- Páginas -->
+  <main class="container">
+    <!-- Home -->
+    <section id="home" class="page active">
+      <h1 data-key="welcome">Bem-vindo ao Pindorama+</h1>
+      <p data-key="tagline">Entre no universo do Pindorama Park de onde estiver.</p>
 
-  <div class="container">
-    <div class="content-grid">
-      <div class="card"><h3 id="shows">Atrações</h3></div>
-      <div class="card"><h3 id="events">Eventos Especiais</h3></div>
-      <div class="card"><h3 id="tours">Tours Virtuais</h3></div>
-      <div class="card"><h3 id="exclusive">Conteúdo Exclusivo</h3></div>
+      <h2 data-key="trailers">Trailers & Vídeos</h2>
+      <div class="trailers-grid">
+        <div class="trailer-card" data-video="https://www.youtube.com/embed/dQw4w9WgXcQ">
+          <div class="thumbnail">Vídeo 1</div>
+          <h3 data-key="trailer1">Lançamento do Parque</h3>
+        </div>
+        <div class="trailer-card" data-video="https://www.youtube.com/embed/jNQXAC9IVRw">
+          <div class="thumbnail">Vídeo 2</div>
+          <h3 data-key="trailer2">Atração: Floresta Encantada</h3>
+        </div>
+        <div class="trailer-card" data-video="https://www.youtube.com/embed/ub82Xb1C8os">
+          <div class="thumbnail">Vídeo 3</div>
+          <h3 data-key="trailer3">Evento: Festival Pindorama</h3>
+        </div>
+      </div>
+    </section>
+
+    <!-- Atrações -->
+    <section id="attractions" class="page">
+      <h1 data-key="attractions_title">Atrações do Pindorama Park</h1>
+      <p data-key="attractions_desc">Descubra as experiências mais emocionantes do nosso parque temático inspirado na cultura brasileira.</p>
+      <div class="trailers-grid">
+        <div class="trailer-card" data-video="https://www.youtube.com/embed/dQw4w9WgXcQ">
+          <div class="thumbnail">Montanha Tupã</div>
+          <h3>Montanha Tupã</h3>
+        </div>
+        <div class="trailer-card" data-video="https://www.youtube.com/embed/jNQXAC9IVRw">
+          <div class="thumbnail">Rio das Onças</div>
+          <h3>Rio das Onças</h3>
+        </div>
+      </div>
+    </section>
+
+    <!-- Eventos -->
+    <section id="events" class="page">
+      <h1 data-key="events_title">Eventos Especiais</h1>
+      <p data-key="events_desc">Festivais, noites temáticas e experiências únicas ao longo do ano.</p>
+      <ul style="margin-top:1.5rem; padding-left:1.5rem;">
+        <li data-key="event1">Festival de Luzes – Junho a Agosto</li>
+        <li data-key="event2">Noite dos Heróis Indígenas – Setembro</li>
+        <li data-key="event3">Réveillon Pindorama – 31 de Dezembro</li>
+      </ul>
+    </section>
+
+    <!-- Ingressos -->
+    <section id="tickets" class="page">
+      <h1 data-key="tickets_title">Compre Seu Ingresso</h1>
+      <p data-key="tickets_desc">Acesso diário, pacotes familiares e ingressos com descontos antecipados.</p>
+      <div class="ticket-options">
+        <div class="ticket-card">
+          <h3 data-key="ticket1">Adulto</h3>
+          <div class="ticket-price">R$ 89,90</div>
+          <button class="pix-btn" data-key="buy">Comprar com PIX</button>
+        </div>
+        <div class="ticket-card">
+          <h3 data-key="ticket2">Criança (3-12)</h3>
+          <div class="ticket-price">R$ 49,90</div>
+          <button class="pix-btn" data-key="buy">Comprar com PIX</button>
+        </div>
+        <div class="ticket-card">
+          <h3 data-key="ticket3">Passe Família (2+2)</h3>
+          <div class="ticket-price">R$ 249,90</div>
+          <button class="pix-btn" data-key="buy">Comprar com PIX</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Modal de Vídeo -->
+  <div id="video-modal">
+    <div class="modal-content">
+      <span class="close-modal">&times;</span>
+      <iframe id="video-frame" src="" frameborder="0" allowfullscreen></iframe>
     </div>
   </div>
 
@@ -206,37 +367,100 @@
   </footer>
 
   <script>
+    // --- Navegação entre páginas ---
+    document.querySelectorAll('[data-page]').forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const pageId = link.getAttribute('data-page');
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById(pageId).classList.add('active');
+      });
+    });
+
+    // --- Player de Vídeo ---
+    document.querySelectorAll('.trailer-card').forEach(card => {
+      card.addEventListener('click', () => {
+        const url = card.getAttribute('data-video');
+        document.getElementById('video-frame').src = url;
+        document.getElementById('video-modal').style.display = 'flex';
+      });
+    });
+
+    document.querySelector('.close-modal').addEventListener('click', () => {
+      document.getElementById('video-modal').style.display = 'none';
+      document.getElementById('video-frame').src = '';
+    });
+
+    window.addEventListener('click', (e) => {
+      if (e.target === document.getElementById('video-modal')) {
+        document.getElementById('video-modal').style.display = 'none';
+        document.getElementById('video-frame').src = '';
+      }
+    });
+
+    // --- Multilíngue ---
     const translations = {
       en: {
         welcome: "Welcome to Pindorama+",
         tagline: "Enter the Pindorama Park universe from anywhere.",
-        explore: "Explore Now",
-        shows: "Attractions",
-        events: "Special Events",
-        tours: "Virtual Tours",
-        exclusive: "Exclusive Content"
+        trailers: "Trailers & Videos",
+        trailer1: "Park Launch",
+        trailer2: "Attraction: Enchanted Forest",
+        trailer3: "Event: Pindorama Festival",
+        attractions_title: "Pindorama Park Attractions",
+        attractions_desc: "Discover the most exciting experiences at our Brazilian culture-themed park.",
+        events_title: "Special Events",
+        events_desc: "Festivals, themed nights, and unique experiences throughout the year.",
+        event1: "Lights Festival – June to August",
+        event2: "Night of Indigenous Heroes – September",
+        event3: "Pindorama New Year's Eve – December 31",
+        tickets_title: "Buy Your Ticket",
+        tickets_desc: "Daily access, family packages, and early-bird discounts.",
+        ticket1: "Adult",
+        ticket2: "Child (3-12)",
+        ticket3: "Family Pass (2 adults + 2 kids)",
+        buy: "Buy with PIX",
+        home: "Home",
+        attractions: "Attractions",
+        events: "Events",
+        tickets: "Tickets"
       },
       pt: {
         welcome: "Bem-vindo ao Pindorama+",
         tagline: "Entre no universo do Pindorama Park de onde estiver.",
-        explore: "Explorar Agora",
-        shows: "Atrações",
-        events: "Eventos Especiais",
-        tours: "Tours Virtuais",
-        exclusive: "Conteúdo Exclusivo"
+        trailers: "Trailers e Vídeos",
+        trailer1: "Lançamento do Parque",
+        trailer2: "Atração: Floresta Encantada",
+        trailer3: "Evento: Festival Pindorama",
+        attractions_title: "Atrações do Pindorama Park",
+        attractions_desc: "Descubra as experiências mais emocionantes do nosso parque temático inspirado na cultura brasileira.",
+        events_title: "Eventos Especiais",
+        events_desc: "Festivais, noites temáticas e experiências únicas ao longo do ano.",
+        event1: "Festival de Luzes – Junho a Agosto",
+        event2: "Noite dos Heróis Indígenas – Setembro",
+        event3: "Réveillon Pindorama – 31 de Dezembro",
+        tickets_title: "Compre Seu Ingresso",
+        tickets_desc: "Acesso diário, pacotes familiares e ingressos com descontos antecipados.",
+        ticket1: "Adulto",
+        ticket2: "Criança (3-12)",
+        ticket3: "Passe Família (2+2)",
+        buy: "Comprar com PIX",
+        home: "Início",
+        attractions: "Atrações",
+        events: "Eventos",
+        tickets: "Ingressos"
       }
     };
 
     let currentLang = 'pt';
 
     function applyTranslations() {
-      document.getElementById('welcome').textContent = translations[currentLang].welcome;
-      document.getElementById('tagline').textContent = translations[currentLang].tagline;
-      document.getElementById('explore').textContent = translations[currentLang].explore;
-      document.getElementById('shows').textContent = translations[currentLang].shows;
-      document.getElementById('events').textContent = translations[currentLang].events;
-      document.getElementById('tours').textContent = translations[currentLang].tours;
-      document.getElementById('exclusive').textContent = translations[currentLang].exclusive;
+      document.querySelectorAll('[data-key]').forEach(el => {
+        const key = el.getAttribute('data-key');
+        if (translations[currentLang][key]) {
+          el.textContent = translations[currentLang][key];
+        }
+      });
       document.documentElement.lang = currentLang;
     }
 
@@ -245,10 +469,11 @@
       applyTranslations();
     });
 
+    // --- Splash ---
     window.addEventListener('load', () => {
       setTimeout(() => {
         document.getElementById('splash').style.display = 'none';
-      }, 1200);
+      }, 1000);
     });
 
     applyTranslations();
