@@ -1,74 +1,530 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>P+</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-      tailwind.config = {
-        theme: {
-          extend: {
-            colors: {
-              background: '#0f1014', // Darker background for glass contrast
-              surface: '#292d3e',
-              primary: '#f9f9f9',
-              secondary: '#cacaca',
-              accent: '#0063e5',
-            },
-            fontFamily: {
-              sans: ['Inter', 'sans-serif'],
-            },
-            backgroundImage: {
-              'glass': 'linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05))',
-              'glass-hover': 'linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.1))',
-              'main-gradient': 'radial-gradient(circle at 50% 0%, #1a4c30 0%, #0f1014 60%)', // Subtle green tint at top
-            }
-          },
-        },
-      }
-    </script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <style>
-      body {
-        background-color: #0f1014;
-        background-image: radial-gradient(circle at 50% -20%, #1e3a29 0%, #0f1014 50%);
-        color: white;
-        font-family: 'Inter', sans-serif;
-        overflow-x: hidden;
-        min-height: 100vh;
-      }
-      /* Hide scrollbar for Chrome, Safari and Opera */
-      .no-scrollbar::-webkit-scrollbar {
-          display: none;
-      }
-      /* Hide scrollbar for IE, Edge and Firefox */
-      .no-scrollbar {
-          -ms-overflow-style: none;  /* IE and Edge */
-          scrollbar-width: none;  /* Firefox */
-      }
-      
-      .glass-panel {
-        background: rgba(255, 255, 255, 0.05);
-        backdrop-filter: blur(16px);
-        -webkit-backdrop-filter: blur(16px);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-      }
-    </style>
-  <script type="importmap">
-{
-  "imports": {
-    "lucide-react": "https://esm.sh/lucide-react@^0.561.0",
-    "@google/genai": "https://esm.sh/@google/genai@^1.33.0",
-    "react/": "https://esm.sh/react@^19.2.3/",
-    "react": "https://esm.sh/react@^19.2.3",
-    "react-dom/": "https://esm.sh/react-dom@^19.2.3/"
-  }
-}
-</script>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pindorama+</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Georgia', serif;
+    }
+
+    :root {
+      --primary-bg: #0d1b12; /* verde escuro como no logo */
+      --text: #ffffff;
+      --accent: #FFD700; /* dourado */
+      --card-bg: rgba(13, 27, 18, 0.7);
+      --overlay: rgba(13, 27, 18, 0.9);
+    }
+
+    body {
+      background: var(--primary-bg);
+      color: var(--text);
+      overflow-x: hidden;
+    }
+
+    /* Splash */
+    #splash {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: var(--accent);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+    .loader {
+      width: 60px; height: 60px;
+      border: 8px solid rgba(13, 27, 18, 0.2);
+      border-top: 8px solid #0d1b12;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+    /* Header */
+    header {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(13, 27, 18, 0.85);
+      backdrop-filter: blur(8px);
+      z-index: 1000;
+    }
+    .logo-img {
+      height: 40px;
+      filter: drop-shadow(0 0 6px rgba(255, 215, 0, 0.4));
+      transition: transform 0.2s;
+    }
+    .logo-img:hover {
+      transform: scale(1.05);
+    }
+    .lang-btn {
+      background: transparent;
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      padding: 0.4rem 0.8rem;
+      font-weight: bold;
+      border-radius: 4px;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .lang-btn:hover {
+      background: var(--accent);
+      color: var(--primary-bg);
+    }
+
+    /* Hero */
+    .hero {
+      height: 80vh;
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 2rem;
+    }
+    .hero-slide {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      opacity: 0;
+      transition: opacity 1s ease-in-out;
+      background-size: cover;
+      background-position: center;
+    }
+    .hero-slide.active {
+      opacity: 1;
+    }
+    .hero-content {
+      position: absolute;
+      bottom: 5%;
+      left: 5%;
+      max-width: 600px;
+      color: white;
+      z-index: 10;
+    }
+    .hero h1 {
+      font-size: 3.5rem;
+      margin-bottom: 1rem;
+      color: var(--accent);
+      text-shadow: 0 2px 6px rgba(0,0,0,0.8);
+      font-family: 'Georgia', serif;
+    }
+    .hero p {
+      font-size: 1.2rem;
+      margin-bottom: 1.5rem;
+      opacity: 0.95;
+      font-family: 'Georgia', serif;
+    }
+    .btn-watch {
+      background: var(--accent);
+      color: var(--primary-bg);
+      border: none;
+      padding: 0.7rem 2rem;
+      font-size: 1.1rem;
+      font-weight: bold;
+      border-radius: 4px;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .btn-watch:hover {
+      background: #e6c200;
+    }
+
+    /* Indicadores estilo Windows 10 */
+    .hero-indicators {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      display: flex;
+      gap: 10px;
+      z-index: 20;
+    }
+    .indicator {
+      width: 12px;
+      height: 12px;
+      background: rgba(255, 255, 255, 0.4);
+      border-radius: 50%;
+      cursor: pointer;
+      transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.3s;
+    }
+    .indicator.active {
+      background: var(--accent);
+      transform: scale(1.4);
+    }
+
+    /* Gêneros */
+    .genres {
+      padding: 0 2rem 2rem;
+      overflow-x: auto;
+      white-space: nowrap;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+    .genres::-webkit-scrollbar { display: none; }
+    .genre-tag {
+      display: inline-block;
+      padding: 0.6rem 1.2rem;
+      margin-right: 1rem;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      color: white;
+      cursor: pointer;
+      font-family: 'Georgia', serif;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .genre-tag:hover {
+      background: var(--accent);
+      color: var(--primary-bg);
+      transform: translateY(-2px);
+    }
+
+    /* Carrossel de conteúdo */
+    .category {
+      margin: 3rem 0;
+      padding: 0 2rem;
+    }
+    .category h2 {
+      font-size: 1.8rem;
+      margin-bottom: 1.2rem;
+      color: var(--accent);
+      font-family: 'Georgia', serif;
+    }
+    .carousel {
+      display: flex;
+      gap: 1rem;
+      overflow-x: auto;
+      padding: 0.5rem 0;
+      scrollbar-width: none;
+    }
+    .carousel::-webkit-scrollbar { display: none; }
+    .item {
+      min-width: 220px;
+      height: 124px;
+      border-radius: 8px;
+      background-size: cover;
+      background-position: center;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .item:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 14px rgba(255,215,0,0.3);
+    }
+
+    /* Modal */
+    #video-modal {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: var(--overlay);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 2000;
+    }
+    .modal-content {
+      width: 90%;
+      max-width: 900px;
+      background: var(--primary-bg);
+      border-radius: 12px;
+      overflow: hidden;
+      position: relative;
+      border: 2px solid var(--accent);
+    }
+    .modal-content iframe {
+      width: 100%;
+      height: 500px;
+    }
+    .close-modal {
+      position: absolute;
+      top: 12px;
+      right: 18px;
+      color: var(--accent);
+      font-size: 1.8rem;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    footer {
+      text-align: center;
+      padding: 2rem;
+      color: rgba(255,255,255,0.6);
+      font-size: 0.9rem;
+      background: rgba(13, 27, 18, 0.9);
+    }
+  </style>
 </head>
-  <body>
-    <div id="root"></div>
-  </body>
+<body>
+  <div id="splash"><div class="loader"></div></div>
+
+  <header>
+    <!-- Logo PINDORAMA+ sem fundo branco -->
+    <img src="https://i.imgur.com/3VfZQyM.png" alt="Pindorama+" class="logo-img" />
+    <button id="lang-toggle" class="lang-btn">PT / EN</button>
+  </header>
+
+  <!-- Hero com carrossel -->
+  <div class="hero" id="hero">
+    <!-- Slides serão inseridos por JS -->
+    <div class="hero-indicators" id="hero-indicators"></div>
+  </div>
+
+  <!-- Gêneros -->
+  <div class="genres" id="genres-container"></div>
+
+  <!-- Categorias -->
+  <div class="category">
+    <h2 id="cat-movies">Filmes</h2>
+    <div class="carousel" id="movies"></div>
+  </div>
+  <div class="category">
+    <h2 id="cat-series">Séries</h2>
+    <div class="carousel" id="series"></div>
+  </div>
+  <div class="category">
+    <h2 id="cat-originals">Originais Pindorama+</h2>
+    <div class="carousel" id="originals"></div>
+  </div>
+  <div class="category">
+    <h2 id="cat-new">Lançamentos</h2>
+    <div class="carousel" id="new"></div>
+  </div>
+
+  <!-- Modal -->
+  <div id="video-modal">
+    <div class="modal-content">
+      <span class="close-modal">&times;</span>
+      <iframe id="video-frame" src="" frameborder="0" allowfullscreen></iframe>
+    </div>
+  </div>
+
+  <footer>&copy; 2025 Pindorama+. Todos os direitos reservados.</footer>
+
+  <script>
+    // Hero Slides
+    const heroSlides = [
+      {
+        img: "https://images.pexels.com/photos/3393977/pexels-photo-3393977.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750",
+        title: "A Lenda de Pindorama",
+        desc: "Um épico original sobre os guardiões da floresta ancestral.",
+        video: "https://www.youtube.com/embed/dQw4w9WgXcQ"
+      },
+      {
+        img: "https://images.pexels.com/photos/5315471/pexels-photo-5315471.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750",
+        title: "Guardiões do Rio",
+        desc: "Uma jornada mágica pelas águas sagradas do Brasil.",
+        video: "https://www.youtube.com/embed/jNQXAC9IVRw"
+      },
+      {
+        img: "https://images.pexels.com/photos/3709255/pexels-photo-3709255.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750",
+        title: "Floresta Viva",
+        desc: "Natureza, mito e aventura em um mundo esquecido.",
+        video: "https://www.youtube.com/embed/ub82Xb1C8os"
+      },
+      {
+        img: "https://images.pexels.com/photos/4386381/pexels-photo-4386381.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750",
+        title: "Sons da Mata",
+        desc: "Uma série que escuta o coração da floresta.",
+        video: "https://www.youtube.com/embed/dQw4w9WgXcQ"
+      },
+      {
+        img: "https://images.pexels.com/photos/3171571/pexels-photo-3171571.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750",
+        title: "Caminhos do Sol",
+        desc: "Seguindo os passos dos ancestrais sob o sol do sertão.",
+        video: "https://www.youtube.com/embed/jNQXAC9IVRw"
+      }
+    ];
+
+    const genres = ["Aventura", "Fantasia", "Animação", "Documentário", "Drama", "Família", "Mistério", "Cultura Brasileira"];
+
+    const content = {
+      movies: [
+        { img: "https://images.pexels.com/photos/3709255/pexels-photo-3709255.jpeg?auto=compress&cs=tinysrgb&w=300", title: "Floresta Viva", video: "https://www.youtube.com/embed/dQw4w9WgXcQ" },
+        { img: "https://images.pexels.com/photos/3393977/pexels-photo-3393977.jpeg?auto=compress&cs=tinysrgb&w=300", title: "Ritmo da Terra", video: "https://www.youtube.com/embed/jNQXAC9IVRw" },
+        { img: "https://images.pexels.com/photos/3171571/pexels-photo-3171571.jpeg?auto=compress&cs=tinysrgb&w=300", title: "Caminhos do Sol", video: "https://www.youtube.com/embed/ub82Xb1C8os" },
+        { img: "https://images.pexels.com/photos/4386381/pexels-photo-4386381.jpeg?auto=compress&cs=tinysrgb&w=300", title: "Lua sobre o Pantanal", video: "https://www.youtube.com/embed/dQw4w9WgXcQ" }
+      ],
+      series: [
+        { img: "https://images.pexels.com/photos/5315471/pexels-photo-5315471.jpeg?auto=compress&cs=tinysrgb&w=300", title: "Guardiões do Rio", video: "https://www.youtube.com/embed/dQw4w9WgXcQ" },
+        { img: "https://images.pexels.com/photos/4386381/pexels-photo-4386381.jpeg?auto=compress&cs=tinysrgb&w=300", title: "Sons da Mata", video: "https://www.youtube.com/embed/jNQXAC9IVRw" },
+        { img: "https://images.pexels.com/photos/3393977/pexels-photo-3393977.jpeg?auto=compress&cs=tinysrgb&w=300", title: "Espíritos da Floresta", video: "https://www.youtube.com/embed/ub82Xb1C8os" }
+      ],
+      originals: [
+        { img: "https://images.pexels.com/photos/3393977/pexels-photo-3393977.jpeg?auto=compress&cs=tinysrgb&w=300", title: "A Lenda de Pindorama", video: "https://www.youtube.com/embed/dQw4w9WgXcQ" },
+        { img: "https://images.pexels.com/photos/3709255/pexels-photo-3709255.jpeg?auto=compress&cs=tinysrgb&w=300", title: "O Retorno do Curupira", video: "https://www.youtube.com/embed/jNQXAC9IVRw" }
+      ],
+      new: [
+        { img: "https://images.pexels.com/photos/5315471/pexels-photo-5315471.jpeg?auto=compress&cs=tinysrgb&w=300", title: "Festival da Lua Cheia", video: "https://www.youtube.com/embed/ub82Xb1C8os" },
+        { img: "https://images.pexels.com/photos/3171571/pexels-photo-3171571.jpeg?auto=compress&cs=tinysrgb&w=300", title: "Caminhos do Sol", video: "https://www.youtube.com/embed/dQw4w9WgXcQ" }
+      ]
+    };
+
+    let currentLang = 'pt';
+    let currentSlide = 0;
+
+    const translations = {
+      en: {
+        hero: heroSlides.map(s => ({ ...s, 
+          title: s.title,
+          desc: s.desc
+        })),
+        genres: ["Adventure", "Fantasy", "Animation", "Documentary", "Drama", "Family", "Mystery", "Brazilian Culture"],
+        catMovies: "Movies",
+        catSeries: "Series",
+        catOriginals: "Pindorama+ Originals",
+        catNew: "New Releases",
+        btnWatch: "Watch Now"
+      },
+      pt: {
+        hero: heroSlides,
+        genres: genres,
+        catMovies: "Filmes",
+        catSeries: "Séries",
+        catOriginals: "Originais Pindorama+",
+        catNew: "Lançamentos",
+        btnWatch: "Assistir"
+      }
+    };
+
+    function applyTranslations() {
+      const t = translations[currentLang];
+      document.getElementById('cat-movies').textContent = t.catMovies;
+      document.getElementById('cat-series').textContent = t.catSeries;
+      document.getElementById('cat-originals').textContent = t.catOriginals;
+      document.getElementById('cat-new').textContent = t.catNew;
+      renderGenres(t.genres);
+      renderHero();
+    }
+
+    function renderHero() {
+      const heroEl = document.getElementById('hero');
+      const indicatorsEl = document.getElementById('hero-indicators');
+      heroEl.innerHTML = '<div class="hero-indicators" id="hero-indicators"></div>';
+      
+      const t = translations[currentLang].hero;
+      t.forEach((slide, i) => {
+        const div = document.createElement('div');
+        div.className = 'hero-slide';
+        div.style.backgroundImage = `url(${slide.img})`;
+        if (i === currentSlide) div.classList.add('active');
+        heroEl.insertBefore(div, indicatorsEl);
+      });
+
+      // Indicadores
+      indicatorsEl.innerHTML = '';
+      t.forEach((_, i) => {
+        const dot = document.createElement('div');
+        dot.className = 'indicator';
+        if (i === currentSlide) dot.classList.add('active');
+        dot.addEventListener('click', () => {
+          currentSlide = i;
+          updateHeroSlide(true);
+        });
+        indicatorsEl.appendChild(dot);
+      });
+      
+      updateHeroContent();
+    }
+
+    function updateHeroContent() {
+      const t = translations[currentLang].hero[currentSlide];
+      let contentHTML = `
+        <div class="hero-content">
+          <h1>${t.title}</h1>
+          <p>${t.desc}</p>
+          <button class="btn-watch" id="btn-watch">${currentLang === 'pt' ? 'Assistir' : 'Watch Now'}</button>
+        </div>
+      `;
+      document.querySelector('.hero-slide.active')?.insertAdjacentHTML('beforeend', contentHTML);
+      document.getElementById('btn-watch')?.addEventListener('click', () => {
+        openVideo(t.video);
+      });
+    }
+
+    function updateHeroSlide(manual = false) {
+      document.querySelectorAll('.hero-slide').forEach((slide, i) => {
+        slide.classList.toggle('active', i === currentSlide);
+      });
+      document.querySelectorAll('.indicator').forEach((dot, i) => {
+        dot.classList.toggle('active', i === currentSlide);
+      });
+      // Limpa conteúdo antigo
+      document.querySelectorAll('.hero-content').forEach(el => el.remove());
+      updateHeroContent();
+
+      if (!manual) {
+        currentSlide = (currentSlide + 1) % translations[currentLang].hero.length;
+      }
+    }
+
+    function renderGenres(list) {
+      const container = document.getElementById('genres-container');
+      container.innerHTML = '';
+      list.forEach(genre => {
+        const span = document.createElement('span');
+        span.className = 'genre-tag';
+        span.textContent = genre;
+        container.appendChild(span);
+      });
+    }
+
+    function renderCarousel(containerId, items) {
+      const container = document.getElementById(containerId);
+      container.innerHTML = '';
+      items.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'item';
+        div.style.backgroundImage = `url(${item.img})`;
+        div.title = item.title;
+        div.onclick = () => openVideo(item.video);
+        container.appendChild(div);
+      });
+    }
+
+    function openVideo(url) {
+      document.getElementById('video-frame').src = url;
+      document.getElementById('video-modal').style.display = 'flex';
+    }
+
+    document.querySelector('.close-modal')?.addEventListener('click', () => {
+      document.getElementById('video-modal').style.display = 'none';
+      document.getElementById('video-frame').src = '';
+    });
+
+    window.addEventListener('click', (e) => {
+      if (e.target === document.getElementById('video-modal')) {
+        document.getElementById('video-modal').style.display = 'none';
+        document.getElementById('video-frame').src = '';
+      }
+    });
+
+    document.getElementById('lang-toggle')?.addEventListener('click', () => {
+      currentLang = currentLang === 'pt' ? 'en' : 'pt';
+      applyTranslations();
+    });
+
+    // Auto-avanço do hero a cada 5s
+    setInterval(() => {
+      updateHeroSlide();
+    }, 5000);
+
+    // Inicializa
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        document.getElementById('splash').style.display = 'none';
+      }, 1000);
+
+      applyTranslations();
+
+      Object.keys(content).forEach(key => {
+        renderCarousel(key, content[key]);
+      });
+    });
+  </script>
+</body>
 </html>
