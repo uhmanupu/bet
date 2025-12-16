@@ -9,15 +9,15 @@
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
+      font-family: 'Georgia', serif;
     }
 
     :root {
-      --primary-bg: linear-gradient(135deg, #0d1b2a 0%, #1e3a5f 50%, #0d1b2a 100%);
+      --primary-bg: #0d1b12; /* verde escuro como no logo */
       --text: #ffffff;
-      --accent: #FFD700;
-      --card-bg: rgba(13, 27, 42, 0.7);
-      --overlay: rgba(13, 27, 42, 0.9);
+      --accent: #FFD700; /* dourado */
+      --card-bg: rgba(13, 27, 18, 0.7);
+      --overlay: rgba(13, 27, 18, 0.9);
     }
 
     body {
@@ -38,8 +38,8 @@
     }
     .loader {
       width: 60px; height: 60px;
-      border: 8px solid rgba(13, 27, 42, 0.2);
-      border-top: 8px solid #0d1b2a;
+      border: 8px solid rgba(13, 27, 18, 0.2);
+      border-top: 8px solid #0d1b12;
       border-radius: 50%;
       animation: spin 1s linear infinite;
     }
@@ -54,15 +54,17 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background: rgba(13, 27, 42, 0.85);
+      background: rgba(13, 27, 18, 0.85);
       backdrop-filter: blur(8px);
       z-index: 1000;
     }
     .logo {
-      font-size: 2rem;
+      font-size: 2.2rem;
       font-weight: bold;
+      letter-spacing: 1px;
       color: var(--accent);
-      text-shadow: 0 0 8px rgba(255, 215, 0, 0.4);
+      text-shadow: 0 0 6px rgba(255, 215, 0, 0.4);
+      font-family: 'Georgia', serif;
     }
     .lang-btn {
       background: transparent;
@@ -72,10 +74,11 @@
       font-weight: bold;
       border-radius: 4px;
       cursor: pointer;
+      font-family: inherit;
     }
     .lang-btn:hover {
       background: var(--accent);
-      color: #0d1b2a;
+      color: var(--primary-bg);
     }
 
     /* Hero */
@@ -109,27 +112,30 @@
       margin-bottom: 1rem;
       color: var(--accent);
       text-shadow: 0 2px 6px rgba(0,0,0,0.8);
+      font-family: 'Georgia', serif;
     }
     .hero p {
       font-size: 1.2rem;
       margin-bottom: 1.5rem;
       opacity: 0.95;
+      font-family: 'Georgia', serif;
     }
     .btn-watch {
       background: var(--accent);
-      color: #0d1b2a;
+      color: var(--primary-bg);
       border: none;
       padding: 0.7rem 2rem;
       font-size: 1.1rem;
       font-weight: bold;
       border-radius: 4px;
       cursor: pointer;
+      font-family: inherit;
     }
     .btn-watch:hover {
       background: #e6c200;
     }
 
-    /* Indicadores no estilo Windows 10 */
+    /* Indicadores estilo Windows 10 */
     .hero-indicators {
       position: absolute;
       bottom: 20px;
@@ -168,11 +174,12 @@
       border-radius: 20px;
       color: white;
       cursor: pointer;
+      font-family: 'Georgia', serif;
       transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
     .genre-tag:hover {
       background: var(--accent);
-      color: #0d1b2a;
+      color: var(--primary-bg);
       transform: translateY(-2px);
     }
 
@@ -185,6 +192,7 @@
       font-size: 1.8rem;
       margin-bottom: 1.2rem;
       color: var(--accent);
+      font-family: 'Georgia', serif;
     }
     .carousel {
       display: flex;
@@ -202,7 +210,7 @@
       background-position: center;
       cursor: pointer;
       box-shadow: 0 4px 8px rgba(0,0,0,0.4);
-      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s;
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
     .item:hover {
       transform: scale(1.05);
@@ -222,7 +230,7 @@
     .modal-content {
       width: 90%;
       max-width: 900px;
-      background: #0d1b2a;
+      background: var(--primary-bg);
       border-radius: 12px;
       overflow: hidden;
       position: relative;
@@ -239,13 +247,15 @@
       color: var(--accent);
       font-size: 1.8rem;
       cursor: pointer;
+      font-weight: bold;
     }
 
     footer {
       text-align: center;
       padding: 2rem;
       color: rgba(255,255,255,0.6);
-      background: rgba(13, 27, 42, 0.9);
+      font-size: 0.9rem;
+      background: rgba(13, 27, 18, 0.9);
     }
   </style>
 </head>
@@ -253,7 +263,7 @@
   <div id="splash"><div class="loader"></div></div>
 
   <header>
-    <div class="logo">Pindorama+</div>
+    <div class="logo">PINDORAMA+</div>
     <button id="lang-toggle" class="lang-btn">PT / EN</button>
   </header>
 
